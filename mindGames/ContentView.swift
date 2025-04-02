@@ -1,24 +1,14 @@
-//
-//  ContentView.swift
-//  mindGames
-//
-//  Created by Артём Брагин on 01.04.2025.
-//
-
 import SwiftUI
 
-struct ContentView: View {
+struct MainView: View {
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            MainGamesSectionView()
+            Spacer()
         }
-        .padding()
     }
 }
 
 #Preview {
-    ContentView()
+    MainView()
 }
