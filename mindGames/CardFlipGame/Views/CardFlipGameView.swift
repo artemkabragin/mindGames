@@ -1,7 +1,5 @@
 import SwiftUI
 
-
-
 struct CardFlipGameView: View {
     
     @StateObject private var viewModel = CardFlipGameViewModel()
@@ -9,13 +7,13 @@ struct CardFlipGameView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Time: \(viewModel.timeRemaining)")
+                Text("Оставшееся время: \(viewModel.timeRemaining)")
                     .font(.title2)
                     .padding()
                 
                 Spacer()
                 
-                Button("Restart") {
+                Button("Начать заново") {
                     viewModel.startNewGame()
                 }
                 .padding()
@@ -36,12 +34,19 @@ struct CardFlipGameView: View {
         .onAppear {
             viewModel.startNewGame()
         }
-        .alert("Game Over", isPresented: $viewModel.isGameOver) {
-            Button("Play Again") {
+        .alert("Игра окончена", isPresented: $viewModel.isGameOver) {
+            Button("Сыграть еще?") {
                 viewModel.startNewGame()
             }
         } message: {
-            Text("Time's up! Try again to match all the cards.")
+            Text("Попробуйте еще, не сдавайтесь.")
+        }
+        .alert("Вы выиграли!", isPresented: $viewModel.isGameWin) {
+            Button("Сыграть еще?") {
+                viewModel.startNewGame()
+            }
+        } message: {
+            Text("Так держать!")
         }
     }
 }

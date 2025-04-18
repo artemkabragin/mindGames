@@ -6,8 +6,8 @@ private enum Constants {
         .blue,
         .green,
         .yellow,
-        .purple,
-        .orange
+//        .purple,
+//        .orange
     ]
     
     static let time: Int = 60
@@ -104,17 +104,6 @@ private extension CardFlipGameViewModel {
         
         selectedCards.removeAll()
         matchCheckWorkItem = nil
-    }
-    
-    func toggleIsSelected(_ card: Card) {
-        guard let index = cards.firstIndex(where: { $0.id == card.id }) else { return }
-        
-        cards[index].isSelected.toggle()
-        
-        if cards[index].isSelected {
-            selectedCards.append(cards[index])
-        } else {
-            selectedCards.removeAll { $0.id == card.id }
-        }
+        isGameWin = cards.allSatisfy { $0.isMatched }
     }
 }
