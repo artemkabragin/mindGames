@@ -11,6 +11,16 @@ final class ReactionGameViewModel: ObservableObject {
     @Published var isPlaying = false
     @Published var showResult = false
     
+    // MARK: - Private Properties
+    
+    private var achievementManager: AchievementManager
+    
+    // MARK: - Init
+    
+    init(achievementManager: AchievementManager = .shared) {
+        self.achievementManager = achievementManager
+    }
+    
     // MARK: - Public Methods
     
     func startGame() {
@@ -26,6 +36,11 @@ final class ReactionGameViewModel: ObservableObject {
                 startTime = Date()
             }
         }
+        
+        achievementManager.updateAchievement(
+            for: .reaction,
+            action: .gamePlayed
+        )
     }
     
     func stopGame() {
@@ -44,6 +59,13 @@ final class ReactionGameViewModel: ObservableObject {
         let end = Date()
         let time = end.timeIntervalSince(startTime)
         reactionTime = time
+        
+        if let reactionTime {
+            achievementManager.updateAchievement(
+                for: .reaction,
+                action: .newRecord(reactionTime)
+            )
+        }
         
         if bestTime == nil || time < bestTime! {
             bestTime = time

@@ -1,11 +1,5 @@
 import Foundation
 
-enum GameType {
-    case cardFlip
-    case reaction
-    case colorMatch
-}
-
 struct Game: Identifiable, Hashable {
     let id = UUID()
     let name: String

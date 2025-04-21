@@ -2,7 +2,9 @@ import SwiftUI
 
 struct ReactionGameView: View {
     
-    @StateObject private var viewModel = ReactionGameViewModel()
+    // MARK: - Private Properties
+    
+    @StateObject private var viewModel: ReactionGameViewModel = ReactionGameViewModel()
     
     var body: some View {
         VStack {
