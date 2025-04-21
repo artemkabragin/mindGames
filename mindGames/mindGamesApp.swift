@@ -1,10 +1,19 @@
 import SwiftUI
 
 @main
-struct mindGamesApp: App {    
+struct mindGamesApp: App {
+    
+    @StateObject var bannerService = BannerService()
+    
     var body: some Scene {
         WindowGroup {
-            MainScreenView()
+            ZStack {
+                MainScreenView()
+                if let type = bannerService.bannerType {
+                    BannerView(banner: type)
+                }
+            }
+            .environmentObject(bannerService)
         }
     }
 }

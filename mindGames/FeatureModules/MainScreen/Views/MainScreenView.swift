@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct MainScreenView: View {
+    @EnvironmentObject var bannerService: BannerService
+    
     @StateObject private var viewModel: MainScreenViewModel
     
     init(
@@ -19,6 +21,8 @@ struct MainScreenView: View {
                             ForEach(Game.games) { game in
                                 GameCell(game: game)
                                     .onTapGesture {
+                                        
+
                                         viewModel.selectedGame = game
                                         viewModel.navigationPath.append(game)
                                     }
@@ -35,6 +39,9 @@ struct MainScreenView: View {
                         
                         ForEach(viewModel.achivements) { achievement in
                             AchievementCell(achievement: achievement)
+                                .onTapGesture {
+                                    bannerService.setBanner(banner: .success(message: "Новое достижение!", isPersistent: true))
+                                }
                         }
                     }
                     .padding()
