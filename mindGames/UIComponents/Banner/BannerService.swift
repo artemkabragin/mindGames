@@ -3,6 +3,10 @@ import SwiftUI
 
 class BannerService: ObservableObject {
     
+    static let shared = BannerService()
+    
+    private init() {}
+    
     // MARK: - Public Properties
     
     @Published var isAnimating = false
@@ -23,12 +27,13 @@ class BannerService: ObservableObject {
     
     // MARK: - Public Methods
     
-    func setBanner(banner: BannerType) {
+    func setBanner(_ banner: BannerType) {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
             self.bannerType = banner
         }
     }
     
+    @MainActor
     func removeBanner() {
         withAnimation(.easeOut(duration: 0.2)) {
             self.bannerType = nil

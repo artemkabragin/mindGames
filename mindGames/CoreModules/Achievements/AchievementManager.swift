@@ -6,36 +6,30 @@ enum AchievementAction {
     case perfectGame
 }
 
-class AchievementManager: ObservableObject {
+final class AchievementManager: ObservableObject {
+    
+    // MARK: - Static Properties
+    
+    static let shared = AchievementManager()
+    
+    // MARK: - Public Properties
     
     @Published private(set) var achievements: [Achievement] = []
+    
+    // MARK: - Private Properties
+    
     private let userDefaults = UserDefaults.standard
     private let achievementsKey = "game_achievements"
     private let lastPlayedKey = "last_played_date"
+    private let bannerService = BannerService.shared
     
-    static let shared = AchievementManager()
+    // MARK: - Init
     
     private init() {
         loadAchievements()
     }
     
-    private func loadAchievements() {
-        if let data = userDefaults.data(forKey: achievementsKey),
-           let decodedAchievements = try? JSONDecoder().decode([Achievement].self, from: data) {
-            achievements = decodedAchievements
-        } else {
-            achievements = GameType.allCases.flatMap { gameType in
-                Achievement.defaultAchievements(for: gameType)
-            }
-            saveAchievements()
-        }
-    }
-    
-    private func saveAchievements() {
-        if let encoded = try? JSONEncoder().encode(achievements) {
-            userDefaults.set(encoded, forKey: achievementsKey)
-        }
-    }
+    // MARK: - Public Methods
     
     func updateAchievement(
         for gameType: GameType,
@@ -44,6 +38,7 @@ class AchievementManager: ObservableObject {
         let gameAchievements = achievements.filter { $0.gameType == gameType }
         
         for (index, achievement) in gameAchievements.enumerated() {
+            let achievementIsUnlocked = achievement.isUnlocked
             var updatedAchievement = achievement
             
             switch (achievement.type, action) {
@@ -83,6 +78,11 @@ class AchievementManager: ObservableObject {
                 break
             }
             
+            setBannerIfNeeded(
+                achievement: achievement,
+                updatedAchievement: updatedAchievement
+            )
+            
             if let globalIndex = achievements.firstIndex(where: { $0.id == achievement.id }) {
                 achievements[globalIndex] = updatedAchievement
             }
@@ -97,4 +97,48 @@ class AchievementManager: ObservableObject {
             .sorted { $0.progress > $1.progress }
             .sorted { $0.isUnlocked && !$1.isUnlocked }
     }
-} 
+}
+
+// MARK: - Private Methods
+
+private extension AchievementManager {
+    func loadAchievements() {
+        //        if let data = userDefaults.data(forKey: achievementsKey),
+        //           let decodedAchievements = try? JSONDecoder().decode([Achievement].self, from: data) {
+        //            achievements = decodedAchievements
+        //        } else {
+        achievements = GameType.allCases.flatMap { gameType in
+            Achievement.defaultAchievements(for: gameType)
+        }
+        saveAchievements()
+        //        }
+    }
+    
+    func saveAchievements() {
+        if let encoded = try? JSONEncoder().encode(achievements) {
+            userDefaults.set(encoded, forKey: achievementsKey)
+        }
+    }
+    
+    func setBannerIfNeeded(
+        achievement: Achievement,
+        updatedAchievement: Achievement
+    ) {
+        let achievementIsUnlocked = achievement.isUnlocked
+        let updatedAchievementIsUnlocked = updatedAchievement.isUnlocked
+        let needShowBanner = !achievementIsUnlocked && updatedAchievementIsUnlocked
+        
+        guard needShowBanner else { return }
+        
+        let bannerMessage = String.getNewAchievementBannerMessage(by: updatedAchievement.title)
+        bannerService.setBanner(.success(message: bannerMessage))
+    }
+}
+
+// MARK: - String
+
+private extension String {
+    static func getNewAchievementBannerMessage(by achievementName: String) -> String {
+        return "Новое достижение! \(achievementName)"
+    }
+}

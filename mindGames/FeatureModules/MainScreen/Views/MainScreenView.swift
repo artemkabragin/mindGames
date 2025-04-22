@@ -15,14 +15,11 @@ struct MainScreenView: View {
         NavigationStack(path: $viewModel.navigationPath) {
             ScrollView {
                 VStack(spacing: 20) {
-                    // Games Section
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 20) {
                             ForEach(Game.games) { game in
                                 GameCell(game: game)
                                     .onTapGesture {
-                                        
-
                                         viewModel.selectedGame = game
                                         viewModel.navigationPath.append(game)
                                     }
@@ -39,9 +36,6 @@ struct MainScreenView: View {
                         
                         ForEach(viewModel.achivements) { achievement in
                             AchievementCell(achievement: achievement)
-                                .onTapGesture {
-                                    bannerService.setBanner(banner: .success(message: "Новое достижение!", isPersistent: true))
-                                }
                         }
                     }
                     .padding()

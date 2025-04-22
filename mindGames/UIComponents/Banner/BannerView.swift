@@ -13,7 +13,7 @@ struct BannerView: View {
         }
         .onAppear {
             guard !banner.isPersistent else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 withAnimation(.easeOut(duration: 0.2)) {
                     bannerService.removeBanner()
                 }
@@ -96,5 +96,5 @@ struct BannerView: View {
 
 #Preview {
     BannerView(banner: .success(message: "Success!"))
-        .environmentObject(BannerService())
+        .environmentObject(BannerService.shared)
 } 
