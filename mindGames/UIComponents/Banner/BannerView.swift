@@ -20,7 +20,6 @@ struct BannerView: View {
             }
         }
         .offset(y: bannerService.dragOffset.height)
-        .opacity(bannerService.isAnimating ? 1 : 0)
         .gesture(
             DragGesture()
                 .onChanged { gesture in
@@ -43,7 +42,6 @@ struct BannerView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding(.horizontal)
         .padding(.top, 8)
-        .transition(.move(edge: .top).combined(with: .opacity))
     }
     
     private func bannerContent() -> some View {

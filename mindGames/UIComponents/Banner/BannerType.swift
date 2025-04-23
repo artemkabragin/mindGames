@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum BannerType {
+enum BannerType: Equatable {
     
     case success(message: String, isPersistent: Bool = false)
     case error(message: String, isPersistent: Bool = false)

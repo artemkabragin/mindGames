@@ -33,7 +33,6 @@ struct Achievement: Identifiable, Codable {
 
 extension Achievement {
     static func defaultAchievements(for gameType: GameType) -> [Achievement] {
-        let description = AchievementType.dailyStreak.getDescription(by: .cardFlip)
         switch gameType {
         case .cardFlip:
             return [

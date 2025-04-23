@@ -37,8 +37,7 @@ final class AchievementManager: ObservableObject {
     ) {
         let gameAchievements = achievements.filter { $0.gameType == gameType }
         
-        for (index, achievement) in gameAchievements.enumerated() {
-            let achievementIsUnlocked = achievement.isUnlocked
+        for achievement in gameAchievements {
             var updatedAchievement = achievement
             
             switch (achievement.type, action) {
