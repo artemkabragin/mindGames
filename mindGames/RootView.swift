@@ -24,7 +24,7 @@ struct RootView: View {
     @ViewBuilder func gameDestination(for game: Game) -> some View {
         switch game.type {
         case .cardFlip:
-            CardFlipGameView()
+            CardFlipGameView(onboardingViewModel: OnboardingViewModel())
         case .reaction:
             ReactionGameView()
         case .colorMatch:

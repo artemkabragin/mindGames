@@ -50,7 +50,7 @@ private extension OnboardingHelloScreenView {
 private extension OnboardingHelloScreenView {
     var nextButton: some View {
         Button(action: {
-            viewModel.navigationPath.append(OnboardingScreen.cardFlipTutorial)
+            viewModel.navigationPath.append(OnboardingScreen.cardFlip)
         }) {
             HStack {
                 Spacer()

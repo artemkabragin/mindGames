@@ -13,17 +13,41 @@ private enum Constants {
     static let time: Int = 60
 }
 
+enum GameSource {
+    case onboarding
+    case `default`
+}
+
+//final class OnboardingGameViewModel {
+//    
+//    @Published var isOnboardingRoundsCompleted = false
+//    private var roundCount: Int = 0
+//    
+//    init(
+//}
+
 final class CardFlipGameViewModel: ObservableObject {
     
     // MARK: - Public Properties
     
+    @AppStorage("hasSeenCardFlipTutorial") var hasSeenTutorial: Bool = false
     @Published var cards: [Card] = []
     @Published var timeRemaining = 60
     @Published var isGameOver = false
     @Published var isGameWin = false
+    private var roundCount: Int = 0
     
+    @Published var isOnboardingRoundsCompleted = false
+    
+    let onboardingRoundCount: Int?
+    
+    init(onboardingRoundCount: Int? = nil) {
+        self.onboardingRoundCount = onboardingRoundCount
+        hasSeenTutorial = false
+    }
     // MARK: - Private Properties
     
+//    let source: GameSource
     private var selectedCards: [Card] = []
     private var matchCheckWorkItem: DispatchWorkItem?
     private var timer: Timer?
@@ -31,12 +55,16 @@ final class CardFlipGameViewModel: ObservableObject {
     // MARK: - Public Methods
     
     func startNewGame() {
-        var newCards: [Card] = []
-        for color in Constants.colors {
-            newCards.append(Card(color: color))
-            newCards.append(Card(color: color))
+        cards = getCards()
+        
+        guard hasSeenTutorial else { return }
+        
+        guard onboardingRoundCount != roundCount else {
+            isOnboardingRoundsCompleted = true
+            return
         }
-        cards = newCards.shuffled()
+        
+        roundCount += 1
         timeRemaining = Constants.time
         isGameOver = false
         selectedCards.removeAll()
@@ -80,6 +108,15 @@ final class CardFlipGameViewModel: ObservableObject {
 // MARK: - Private Methods
 
 private extension CardFlipGameViewModel {
+    func getCards() -> [Card] {
+        var newCards: [Card] = []
+        for color in Constants.colors {
+            newCards.append(Card(color: color))
+            newCards.append(Card(color: color))
+        }
+        return newCards.shuffled()
+    }
+    
     func evaluateSelectedCardsImmediately() {
         guard selectedCards.count == 2 else { return }
         
@@ -104,6 +141,13 @@ private extension CardFlipGameViewModel {
         
         selectedCards.removeAll()
         matchCheckWorkItem = nil
-        isGameWin = cards.allSatisfy { $0.isMatched }
+        
+        let isGameWin = cards.allSatisfy { $0.isMatched }
+        
+        if let onboardingRoundCount {
+            isOnboardingRoundsCompleted = (onboardingRoundCount == roundCount) && isGameWin
+        } else {
+            self.isGameWin = isGameWin
+        }
     }
 }

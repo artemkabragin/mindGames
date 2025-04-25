@@ -7,8 +7,10 @@ final class OnboardingViewModel: ObservableObject {
         switch screen {
         case .hello:
             OnboardingHelloScreenView()
-        case .cardFlipTutorial:
-            CardFlipGameView()
+        case .cardFlip:
+            CardFlipGameView(onboardingViewModel: self)
+        case .reaction:
+            ReactionGameView()
         }
     }
 }
