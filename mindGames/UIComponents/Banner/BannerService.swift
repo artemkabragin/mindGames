@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-class BannerService: ObservableObject {
+final class BannerService: ObservableObject {
     
     static let shared = BannerService()
     
