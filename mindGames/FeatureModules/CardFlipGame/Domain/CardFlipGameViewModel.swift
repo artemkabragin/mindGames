@@ -18,13 +18,49 @@ enum GameSource {
     case `default`
 }
 
-//final class OnboardingGameViewModel {
+//class OnboardingGameViewModel {
+//    
+//    // MARK: - Public Properties
 //    
 //    @Published var isOnboardingRoundsCompleted = false
+//    
+//    // MARK: - Private Properties
+//    
+//    private let onboardingRoundCount: Int
 //    private var roundCount: Int = 0
 //    
-//    init(
+//    // MARK: - Init
+//    
+//    init(onboardingRoundCount: Int) {
+//        self.onboardingRoundCount = onboardingRoundCount
+//    }
+//    
+//    func startNewGame() {
+//        
+//    }
 //}
+
+struct OnboardingGameResult {
+    let gameType: GameType
+    let result: Int
+}
+
+final class OnboardingGameResultCalculator {
+    
+    static let shared = OnboardingGameResultCalculator()
+    
+    func calculateResult(
+        gameType: GameType,
+        attempts: [Int]
+    ) -> Int {
+        let sum = attempts.reduce(0, +)
+        let count = attempts.count
+        
+        guard count > 0 else { return 0 }
+        
+        return sum / count
+    }
+}
 
 final class CardFlipGameViewModel: ObservableObject {
     
@@ -36,10 +72,12 @@ final class CardFlipGameViewModel: ObservableObject {
     @Published var isGameOver = false
     @Published var isGameWin = false
     private var roundCount: Int = 0
+    var attempts: [Int] = []
     
     @Published var isOnboardingRoundsCompleted = false
     
     let onboardingRoundCount: Int?
+    private let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
     
     init(onboardingRoundCount: Int? = nil) {
         self.onboardingRoundCount = onboardingRoundCount
@@ -47,7 +85,6 @@ final class CardFlipGameViewModel: ObservableObject {
     }
     // MARK: - Private Properties
     
-//    let source: GameSource
     private var selectedCards: [Card] = []
     private var matchCheckWorkItem: DispatchWorkItem?
     private var timer: Timer?
@@ -143,6 +180,10 @@ private extension CardFlipGameViewModel {
         matchCheckWorkItem = nil
         
         let isGameWin = cards.allSatisfy { $0.isMatched }
+        
+        if isGameWin {
+            attempts.append(timeRemaining)
+        }
         
         if let onboardingRoundCount {
             isOnboardingRoundsCompleted = (onboardingRoundCount == roundCount) && isGameWin

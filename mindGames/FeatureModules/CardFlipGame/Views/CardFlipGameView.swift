@@ -21,7 +21,8 @@ struct CardFlipGameView: View {
                 onboardingViewModel.navigationPath.append(OnboardingScreen.reaction)
             }
         } message: {
-            Text("Ваш средний результат.")
+            let result = OnboardingGameResultCalculator.shared.calculateResult(gameType: .cardFlip, attempts: viewModel.attempts)
+            Text("Ваш средний результат - \(result).")
         }
         .alert("Игра окончена", isPresented: $viewModel.isGameOver) {
             Button("Сыграть еще?") {
