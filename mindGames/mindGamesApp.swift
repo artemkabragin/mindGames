@@ -9,10 +9,9 @@ struct mindGamesApp: App {
     
     var body: some Scene {
         WindowGroup {
-            
-            
+
             if viewModel.showOnboarding {
-                OnboardingFirstScreenView()
+                OnboardingHelloScreenView()
             } else {
                 RootView()
                     .environmentObject(bannerService)

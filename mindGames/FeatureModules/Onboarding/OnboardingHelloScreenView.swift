@@ -11,23 +11,31 @@ private enum Constants {
             """
 }
 
-struct OnboardingFirstScreenView: View {
+struct OnboardingHelloScreenView: View {
+    
+    @StateObject var viewModel = OnboardingViewModel()
     
     var body: some View {
-        VStack {
-            Spacer()
-            descriptionView
-            Spacer()
-            nextButton
+        
+        NavigationStack(path: $viewModel.navigationPath) {
+            VStack {
+                Spacer()
+                descriptionView
+                Spacer()
+                nextButton
+            }
+            .padding()
+            .navigationTitle("Mind Games")
+            .navigationDestination(for: OnboardingScreen.self) { screen in
+                viewModel.destination(for: screen)
+            }
         }
-        .padding()
-        .navigationTitle("Mind Games")
     }
 }
 
 // MARK: - Description View
 
-private extension OnboardingFirstScreenView {
+private extension OnboardingHelloScreenView {
     var descriptionView: some View {
         Text(Constants.onboardingDescription)
             .font(.title2)
@@ -39,10 +47,10 @@ private extension OnboardingFirstScreenView {
 
 // MARK: - Next Button
 
-private extension OnboardingFirstScreenView {
+private extension OnboardingHelloScreenView {
     var nextButton: some View {
         Button(action: {
-            print("LOOOL")
+            viewModel.navigationPath.append(OnboardingScreen.cardFlipTutorial)
         }) {
             HStack {
                 Spacer()

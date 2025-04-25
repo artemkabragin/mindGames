@@ -1,6 +1,6 @@
 import SwiftUI
 
-class MainScreenViewModel: ObservableObject {
+final class MainScreenViewModel: ObservableObject {
     @Published var navigationPath = NavigationPath()
     @Published var achivements: [Achievement] = []
     
