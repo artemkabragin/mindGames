@@ -4,6 +4,7 @@ struct ReactionGameView: View {
     
     // MARK: - Private Properties
     
+    @ObservedObject var appState: AppState = .shared
     @StateObject private var viewModel: ReactionGameViewModel = ReactionGameViewModel()
     @ObservedObject var onboardingViewModel: OnboardingViewModel
     let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
@@ -12,7 +13,7 @@ struct ReactionGameView: View {
         ZStack {
             gameView
             
-            if !AppState.shared.hasSeenReactionTutorial {
+            if !appState.hasSeenReactionTutorial {
                 ReactionGameOnboardingView(viewModel: viewModel)
             }
         }
