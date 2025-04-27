@@ -2,6 +2,8 @@ import SwiftUI
 
 private enum Constants {
     static let navigationTitle = "Mind Games"
+    static let achievementsSectionTitle = "Достижения"
+    static let personIconSystemName = "person.circle.fill"
 }
 
 struct MainScreenView: View {
@@ -24,7 +26,7 @@ struct MainScreenView: View {
                 Button(action: {
                     viewModel.navigationPath.append(MainScreenDestination.person)
                 }) {
-                    Image(systemName: "person.circle.fill")
+                    Image(systemName: Constants.personIconSystemName)
                         .resizable()
                         .frame(width: 30, height: 30)
                 }
@@ -55,8 +57,8 @@ private extension MainScreenView {
 
 private extension MainScreenView {
     var achievementsSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Achievements")
+        LazyVStack(alignment: .leading, spacing: 10) {
+            Text(Constants.achievementsSectionTitle)
                 .font(.title2)
                 .bold()
                 .padding(.horizontal)
