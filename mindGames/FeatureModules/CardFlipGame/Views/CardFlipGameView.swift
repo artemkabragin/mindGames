@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CardFlipGameView: View {
+        
     
     @StateObject private var viewModel = CardFlipGameViewModel(onboardingRoundCount: 1)
     @ObservedObject var onboardingViewModel: OnboardingViewModel
@@ -10,7 +11,7 @@ struct CardFlipGameView: View {
         ZStack {
             gameView
             
-            if !viewModel.hasSeenTutorial {
+            if !AppState.shared.hasSeenCardFlipTutorial {
                 CardFlipGameOnboardingView(viewModel: viewModel)
             }
         }

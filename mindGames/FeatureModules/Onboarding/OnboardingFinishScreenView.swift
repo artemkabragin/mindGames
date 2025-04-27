@@ -11,7 +11,6 @@ private enum Constants {
 
 struct OnboardingFinishScreenView: View {
         
-    @EnvironmentObject var appState: AppState
     
     var body: some View {
         VStack {
@@ -41,7 +40,7 @@ private extension OnboardingFinishScreenView {
 private extension OnboardingFinishScreenView {
     var nextButton: some View {
         Button(action: {
-            appState.showOnboarding = false
+            AppState.shared.showOnboarding = false
         }) {
             HStack {
                 Spacer()

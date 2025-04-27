@@ -66,7 +66,7 @@ final class CardFlipGameViewModel: ObservableObject {
     
     // MARK: - Public Properties
     
-    @AppStorage("hasSeenCardFlipTutorial") var hasSeenTutorial: Bool = false
+    
     @Published var cards: [Card] = []
     @Published var timeRemaining = Constants.time
     @Published var isGameOver = false
@@ -87,9 +87,10 @@ final class CardFlipGameViewModel: ObservableObject {
     
     // MARK: - Init
     
-    init(onboardingRoundCount: Int? = nil) {
+    init(
+        onboardingRoundCount: Int? = nil
+    ) {
         self.onboardingRoundCount = onboardingRoundCount
-        hasSeenTutorial = false
     }
     
     // MARK: - Public Methods
@@ -97,7 +98,7 @@ final class CardFlipGameViewModel: ObservableObject {
     func startNewGame() {
         cards = getCards()
         
-        guard hasSeenTutorial else { return }
+        guard AppState.shared.hasSeenCardFlipTutorial else { return }
         
         guard onboardingRoundCount != roundCount else {
             isOnboardingRoundsCompleted = true

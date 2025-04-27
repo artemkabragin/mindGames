@@ -70,7 +70,7 @@ private extension CardFlipGameOnboardingView {
     var nextButton: some View {
         Button(action: {
             withAnimation {
-                viewModel.hasSeenTutorial = true
+                AppState.shared.hasSeenCardFlipTutorial = true
                 viewModel.startNewGame()
             }
         }) {

@@ -4,7 +4,7 @@ struct ReactionGameView: View {
     
     // MARK: - Private Properties
     
-    @StateObject private var viewModel: ReactionGameViewModel = ReactionGameViewModel(onboardingRoundCount: 3)
+    @StateObject private var viewModel: ReactionGameViewModel = ReactionGameViewModel(onboardingRoundCount: 1)
     @ObservedObject var onboardingViewModel: OnboardingViewModel
     let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
     
