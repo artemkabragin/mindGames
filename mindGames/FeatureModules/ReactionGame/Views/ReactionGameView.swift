@@ -28,7 +28,7 @@ struct ReactionGameView: View {
         }
         .alert("Тестирование завершено", isPresented: $viewModel.isOnboardingRoundsCompleted) {
             Button("Далее") {
-                onboardingViewModel.navigationPath.append(OnboardingScreen.colorMatch)
+                onboardingViewModel.navigationPath.append(OnboardingDestination.colorMatch)
             }
         } message: {
             let result = onboardingGameResultCalculator.calculateResult(

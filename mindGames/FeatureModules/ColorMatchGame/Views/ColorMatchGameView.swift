@@ -25,7 +25,7 @@ struct ColorMatchGameView: View {
             isPresented: $viewModel.isOnboardingRoundsCompleted
         ) {
             Button("Далее") {
-                onboardingViewModel.navigationPath.append(OnboardingScreen.finish)
+                onboardingViewModel.navigationPath.append(OnboardingDestination.finish)
             }
         } message: {
             let result = onboardingGameResultCalculator.calculateResult(

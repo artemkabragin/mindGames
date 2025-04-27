@@ -3,7 +3,7 @@ import SwiftUI
 final class OnboardingViewModel: ObservableObject {
     @Published var navigationPath = NavigationPath()
     
-    @ViewBuilder func destination(for screen: OnboardingScreen) -> some View {
+    @ViewBuilder func destination(for screen: OnboardingDestination) -> some View {
         switch screen {
         case .hello:
             OnboardingHelloScreenView()

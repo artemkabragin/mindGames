@@ -26,7 +26,7 @@ struct CardFlipGameView: View {
             isPresented: $viewModel.isOnboardingRoundsCompleted
         ) {
             Button("Далее") {
-                onboardingViewModel.navigationPath.append(OnboardingScreen.reaction)
+                onboardingViewModel.navigationPath.append(OnboardingDestination.reaction)
             }
         } message: {
             let result = onboardingGameResultCalculator.calculateResult(

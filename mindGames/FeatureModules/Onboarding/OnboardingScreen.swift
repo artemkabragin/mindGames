@@ -1,4 +1,4 @@
-enum OnboardingScreen {
+enum OnboardingDestination {
     case hello
     case cardFlip
     case reaction

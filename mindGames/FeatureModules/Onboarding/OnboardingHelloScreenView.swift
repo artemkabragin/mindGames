@@ -26,7 +26,7 @@ struct OnboardingHelloScreenView: View {
             }
             .padding()
             .navigationTitle("Mind Games")
-            .navigationDestination(for: OnboardingScreen.self) { screen in
+            .navigationDestination(for: OnboardingDestination.self) { screen in
                 viewModel.destination(for: screen)
             }
         }
@@ -50,7 +50,7 @@ private extension OnboardingHelloScreenView {
 private extension OnboardingHelloScreenView {
     var nextButton: some View {
         Button(action: {
-            viewModel.navigationPath.append(OnboardingScreen.cardFlip)
+            viewModel.navigationPath.append(OnboardingDestination.cardFlip)
         }) {
             HStack {
                 Spacer()
