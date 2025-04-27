@@ -22,7 +22,6 @@ final class AuthService: ObservableObject {
     // MARK: - Init
     
     private init() {
-        logout()
         isLoggedIn = isUserLoggedIn()
     }
     
@@ -39,9 +38,11 @@ final class AuthService: ObservableObject {
     }
     
     // Сохранение токена в Keychain
-    func saveAuthToken(_ token: String) {
-        isLoggedIn = true
+    func saveAuthToken(_ token: String) async {
         keychain[KeychainKeys.authToken] = token
+        await MainActor.run {
+            isLoggedIn = true
+        }
     }
     
     // Удаление токена (для выхода)
@@ -60,7 +61,7 @@ final class AuthService: ObservableObject {
         )
         do {
             let authToken: AuthToken = try await client.sendRequest(requestType: .register(body))
-            saveAuthToken(authToken.value)
+            await saveAuthToken(authToken.value)
         } catch {
             throw error
         }
@@ -77,7 +78,7 @@ final class AuthService: ObservableObject {
         )
         do {
             let authToken: AuthToken = try await client.sendRequest(requestType: .login(body))
-            saveAuthToken(authToken.value)
+            await saveAuthToken(authToken.value)
         } catch {
             throw error
         }

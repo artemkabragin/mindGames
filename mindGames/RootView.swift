@@ -31,7 +31,7 @@ struct RootView: View {
         switch screen {
             
         case .person:
-            Text("persion")
+            UserProfileView()
             
         case .game(let game):
             switch game.type {
