@@ -10,20 +10,38 @@ final class ReactionGameViewModel: ObservableObject {
     @Published var bestTime: Double?
     @Published var isPlaying = false
     @Published var showResult = false
+    @Published var isOnboardingRoundsCompleted = false
+    @AppStorage("hasSeenReactionTutorial") var hasSeenTutorial: Bool = false
     
     // MARK: - Private Properties
     
     private var achievementManager: AchievementManager
+    private var roundCount: Int = 0
+    let onboardingRoundCount: Int?
+    var attempts: [Double] = []
     
     // MARK: - Init
     
-    init(achievementManager: AchievementManager = .shared) {
+    init(
+        achievementManager: AchievementManager = .shared,
+        onboardingRoundCount: Int? = nil
+    ) {
         self.achievementManager = achievementManager
+        self.onboardingRoundCount = onboardingRoundCount
+        hasSeenTutorial = false
     }
     
     // MARK: - Public Methods
     
     func startGame() {
+        guard hasSeenTutorial else { return }
+        
+        guard onboardingRoundCount != roundCount else {
+            isOnboardingRoundsCompleted = true
+            return
+        }
+        
+        roundCount += 1
         isPlaying = true
         isGreen = false
         startTime = nil
@@ -57,22 +75,24 @@ final class ReactionGameViewModel: ObservableObject {
         }
         
         let end = Date()
-        let time = end.timeIntervalSince(startTime)
-        reactionTime = time
+        reactionTime = end.timeIntervalSince(startTime)
         
-        if let reactionTime {
-            achievementManager.updateAchievement(
-                for: .reaction,
-                action: .newRecord(reactionTime)
-            )
+        guard let reactionTime else { return }
+        
+        achievementManager.updateAchievement(
+            for: .reaction,
+            action: .newRecord(reactionTime)
+        )
+        
+        if bestTime == nil || reactionTime < bestTime! {
+            bestTime = reactionTime
         }
         
-        if bestTime == nil || time < bestTime! {
-            bestTime = time
-        }
+        attempts.append(reactionTime)
         
-        isGreen = false
         showResult = true
+        isOnboardingRoundsCompleted = (onboardingRoundCount == roundCount)
+        isGreen = false
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
             if isPlaying {

@@ -51,14 +51,14 @@ final class OnboardingGameResultCalculator {
     
     func calculateResult(
         gameType: GameType,
-        attempts: [Int]
-    ) -> Int {
+        attempts: [Double]
+    ) -> Double {
         let sum = attempts.reduce(0, +)
         let count = attempts.count
         
         guard count > 0 else { return 0 }
         
-        return sum / count
+        return sum / Double(count)
     }
 }
 
@@ -72,7 +72,7 @@ final class CardFlipGameViewModel: ObservableObject {
     @Published var isGameOver = false
     @Published var isGameWin = false
     private var roundCount: Int = 0
-    var attempts: [Int] = []
+    var attempts: [Double] = []
     
     @Published var isOnboardingRoundsCompleted = false
     
@@ -182,7 +182,7 @@ private extension CardFlipGameViewModel {
         let isGameWin = cards.allSatisfy { $0.isMatched }
         
         if isGameWin {
-            attempts.append(timeRemaining)
+            attempts.append(Double(timeRemaining))
         }
         
         if let onboardingRoundCount {

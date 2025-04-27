@@ -26,7 +26,7 @@ struct RootView: View {
         case .cardFlip:
             CardFlipGameView(onboardingViewModel: OnboardingViewModel())
         case .reaction:
-            ReactionGameView()
+            ReactionGameView(onboardingViewModel: OnboardingViewModel())
         case .colorMatch:
             ColorMatchGameView()
         }

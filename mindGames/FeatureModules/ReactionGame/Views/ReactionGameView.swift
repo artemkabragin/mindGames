@@ -4,9 +4,41 @@ struct ReactionGameView: View {
     
     // MARK: - Private Properties
     
-    @StateObject private var viewModel: ReactionGameViewModel = ReactionGameViewModel()
+    @StateObject private var viewModel: ReactionGameViewModel = ReactionGameViewModel(onboardingRoundCount: 2)
+    @ObservedObject var onboardingViewModel: OnboardingViewModel
     
     var body: some View {
+        ZStack {
+            gameView
+            
+            if !viewModel.hasSeenTutorial {
+                ReactionGameOnboardingView(viewModel: viewModel)
+            }
+        }
+        .alert("Тестирование завершено", isPresented: $viewModel.isOnboardingRoundsCompleted) {
+            Button("Далее") {
+                onboardingViewModel.navigationPath.append(OnboardingScreen.colorMatch)
+            }
+        } message: {
+            let result = OnboardingGameResultCalculator.shared.calculateResult(gameType: .cardFlip, attempts: viewModel.attempts)
+            Text("Ваш средний результат - \(result).")
+        }
+        .alert("Время вашей реакции", isPresented: $viewModel.showResult) {
+            Button("OK") {
+                viewModel.showResult = false
+            }
+        } message: {
+            if let time = viewModel.reactionTime {
+                Text("\(time.formatted()) секунд")
+            }
+        }
+    }
+}
+
+// MARK: - Game
+
+private extension ReactionGameView {
+    var gameView: some View {
         VStack {
             Text("Лучшее время: \(viewModel.bestTime?.formatted() ?? "N/A")")
                 .font(.title2)
@@ -37,18 +69,9 @@ struct ReactionGameView: View {
             .cornerRadius(10)
             .padding()
         }
-        .alert("Время вашей реакции", isPresented: $viewModel.showResult) {
-            Button("OK") {
-                viewModel.showResult = false
-            }
-        } message: {
-            if let time = viewModel.reactionTime {
-                Text("\(time.formatted()) секунд")
-            }
-        }
     }
 }
 
 #Preview {
-    ReactionGameView()
+    ReactionGameView(onboardingViewModel: OnboardingViewModel())
 }

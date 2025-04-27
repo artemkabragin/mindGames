@@ -10,7 +10,9 @@ final class OnboardingViewModel: ObservableObject {
         case .cardFlip:
             CardFlipGameView(onboardingViewModel: self)
         case .reaction:
-            ReactionGameView()
+            ReactionGameView(onboardingViewModel: self)
+        case .colorMatch:
+            ColorMatchGameView()
         }
     }
 }

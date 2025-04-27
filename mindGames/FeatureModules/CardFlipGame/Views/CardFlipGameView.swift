@@ -4,6 +4,7 @@ struct CardFlipGameView: View {
     
     @StateObject private var viewModel = CardFlipGameViewModel(onboardingRoundCount: 1)
     @ObservedObject var onboardingViewModel: OnboardingViewModel
+    let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
     
     var body: some View {
         ZStack {
@@ -21,8 +22,11 @@ struct CardFlipGameView: View {
                 onboardingViewModel.navigationPath.append(OnboardingScreen.reaction)
             }
         } message: {
-            let result = OnboardingGameResultCalculator.shared.calculateResult(gameType: .cardFlip, attempts: viewModel.attempts)
-            Text("Ваш средний результат - \(result).")
+            let result = onboardingGameResultCalculator.calculateResult(
+                gameType: .cardFlip,
+                attempts: viewModel.attempts
+            )
+            Text("Ваш средний результат - \(Int(result)).")
         }
         .alert("Игра окончена", isPresented: $viewModel.isGameOver) {
             Button("Сыграть еще?") {
