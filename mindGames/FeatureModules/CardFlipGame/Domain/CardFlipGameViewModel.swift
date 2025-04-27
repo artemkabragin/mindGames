@@ -3,14 +3,14 @@ import SwiftUI
 private enum Constants {
     static let colors: [Color] = [
         .red,
-        .blue,
-        .green,
-        .yellow,
+//        .blue,
+//        .green,
+//        .yellow,
 //        .purple,
 //        .orange
     ]
     
-    static let time: Int = 60
+    static let time: Int = 5
 }
 
 enum GameSource {
@@ -68,26 +68,29 @@ final class CardFlipGameViewModel: ObservableObject {
     
     @AppStorage("hasSeenCardFlipTutorial") var hasSeenTutorial: Bool = false
     @Published var cards: [Card] = []
-    @Published var timeRemaining = 60
+    @Published var timeRemaining = Constants.time
     @Published var isGameOver = false
     @Published var isGameWin = false
-    private var roundCount: Int = 0
+    
     var attempts: [Double] = []
     
     @Published var isOnboardingRoundsCompleted = false
     
     let onboardingRoundCount: Int?
-    private let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
+    
+    // MARK: - Private Properties
+    
+    private var selectedCards: [Card] = []
+    private var matchCheckWorkItem: DispatchWorkItem?
+    private var roundCount: Int = 0
+    private var timer: Timer?
+    
+    // MARK: - Init
     
     init(onboardingRoundCount: Int? = nil) {
         self.onboardingRoundCount = onboardingRoundCount
         hasSeenTutorial = false
     }
-    // MARK: - Private Properties
-    
-    private var selectedCards: [Card] = []
-    private var matchCheckWorkItem: DispatchWorkItem?
-    private var timer: Timer?
     
     // MARK: - Public Methods
     
@@ -106,13 +109,14 @@ final class CardFlipGameViewModel: ObservableObject {
         isGameOver = false
         selectedCards.removeAll()
         
-        timer?.invalidate()
+        stopTimer()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             guard let self else { return }
             if timeRemaining > 0 {
                 timeRemaining -= 1
             } else {
                 isGameOver = true
+                stopTimer()
             }
         }
     }
@@ -139,6 +143,10 @@ final class CardFlipGameViewModel: ObservableObject {
             matchCheckWorkItem = workItem
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: workItem)
         }
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
     }
 }
 

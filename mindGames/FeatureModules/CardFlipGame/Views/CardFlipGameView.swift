@@ -17,7 +17,13 @@ struct CardFlipGameView: View {
         .onAppear {
             viewModel.startNewGame()
         }
-        .alert("Тестирование завершено", isPresented: $viewModel.isOnboardingRoundsCompleted) {
+        .onDisappear {
+            viewModel.stopTimer()
+        }
+        .alert(
+            "Тестирование завершено",
+            isPresented: $viewModel.isOnboardingRoundsCompleted
+        ) {
             Button("Далее") {
                 onboardingViewModel.navigationPath.append(OnboardingScreen.reaction)
             }
@@ -28,7 +34,10 @@ struct CardFlipGameView: View {
             )
             Text("Ваш средний результат - \(Int(result)).")
         }
-        .alert("Игра окончена", isPresented: $viewModel.isGameOver) {
+        .alert(
+            "Игра окончена",
+            isPresented: $viewModel.isGameOver
+        ) {
             Button("Сыграть еще?") {
                 viewModel.startNewGame()
             }

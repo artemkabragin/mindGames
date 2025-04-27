@@ -12,7 +12,9 @@ final class OnboardingViewModel: ObservableObject {
         case .reaction:
             ReactionGameView(onboardingViewModel: self)
         case .colorMatch:
-            ColorMatchGameView()
+            ColorMatchGameView(onboardingViewModel: self)
+        case .finish:
+            OnboardingFinishScreenView()
         }
     }
 }

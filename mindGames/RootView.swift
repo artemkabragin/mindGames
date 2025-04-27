@@ -28,7 +28,7 @@ struct RootView: View {
         case .reaction:
             ReactionGameView(onboardingViewModel: OnboardingViewModel())
         case .colorMatch:
-            ColorMatchGameView()
+            ColorMatchGameView(onboardingViewModel: OnboardingViewModel())
         }
     }
 }

@@ -3,4 +3,5 @@ enum OnboardingScreen {
     case cardFlip
     case reaction
     case colorMatch
+    case finish
 }

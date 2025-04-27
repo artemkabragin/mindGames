@@ -4,8 +4,9 @@ struct ReactionGameView: View {
     
     // MARK: - Private Properties
     
-    @StateObject private var viewModel: ReactionGameViewModel = ReactionGameViewModel(onboardingRoundCount: 2)
+    @StateObject private var viewModel: ReactionGameViewModel = ReactionGameViewModel(onboardingRoundCount: 3)
     @ObservedObject var onboardingViewModel: OnboardingViewModel
+    let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
     
     var body: some View {
         ZStack {
@@ -15,14 +16,6 @@ struct ReactionGameView: View {
                 ReactionGameOnboardingView(viewModel: viewModel)
             }
         }
-        .alert("Тестирование завершено", isPresented: $viewModel.isOnboardingRoundsCompleted) {
-            Button("Далее") {
-                onboardingViewModel.navigationPath.append(OnboardingScreen.colorMatch)
-            }
-        } message: {
-            let result = OnboardingGameResultCalculator.shared.calculateResult(gameType: .cardFlip, attempts: viewModel.attempts)
-            Text("Ваш средний результат - \(result).")
-        }
         .alert("Время вашей реакции", isPresented: $viewModel.showResult) {
             Button("OK") {
                 viewModel.showResult = false
@@ -31,6 +24,17 @@ struct ReactionGameView: View {
             if let time = viewModel.reactionTime {
                 Text("\(time.formatted()) секунд")
             }
+        }
+        .alert("Тестирование завершено", isPresented: $viewModel.isOnboardingRoundsCompleted) {
+            Button("Далее") {
+                onboardingViewModel.navigationPath.append(OnboardingScreen.colorMatch)
+            }
+        } message: {
+            let result = onboardingGameResultCalculator.calculateResult(
+                gameType: .reaction,
+                attempts: viewModel.attempts
+            )
+            Text("Ваш средний результат - \(result).")
         }
     }
 }

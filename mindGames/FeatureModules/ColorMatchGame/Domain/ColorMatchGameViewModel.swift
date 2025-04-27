@@ -9,37 +9,66 @@ private enum Constants {
         .purple,
         .orange
     ]
+    static let time = 5
 }
 
 final class ColorMatchGameViewModel: ObservableObject {
     
     // MARK: - Public Properties
     
+    @AppStorage("hasSeenColorMatchTutorial") var hasSeenTutorial: Bool = false
     @Published var score = 0
-    @Published var timeRemaining = 30
+    @Published var timeRemaining = Constants.time
     @Published var isGameOver = false
     @Published var showResult = false
     @Published var currentAnswers: [ColorAnswer] = []
     @Published var currentQuestion: ColorQuestion?
+    @Published var isOnboardingRoundsCompleted = false
+    private var roundCount: Int = 0
+    var attempts: [Double] = []
     
     // MARK: - Private Properties
     
     private var timer: Timer?
+    private let onboardingRoundCount: Int?
+    
+    // MARK: - Init
+    
+    init(onboardingRoundCount: Int? = nil) {
+        self.onboardingRoundCount = onboardingRoundCount
+        hasSeenTutorial = false
+    }
     
     // MARK: - Public Methods
     
     func startGame() {
+        startNewRound()
+        
+        guard hasSeenTutorial else { return }
+        
+        guard onboardingRoundCount != roundCount else {
+            isOnboardingRoundsCompleted = true
+            return
+        }
+        
+        roundCount += 1
         score = 0
-        timeRemaining = 30
+        timeRemaining = Constants.time
         isGameOver = false
         
-        timer?.invalidate()
+        stopTimer()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             guard let self else { return }
             if timeRemaining > 0 {
                 timeRemaining -= 1
             } else {
-                isGameOver = true
+                attempts.append(Double(score))
+                if onboardingRoundCount == roundCount {
+                    isOnboardingRoundsCompleted = true
+                } else {
+                    isGameOver = true
+                }
+                stopTimer()
             }
         }
         
@@ -52,6 +81,10 @@ final class ColorMatchGameViewModel: ObservableObject {
         }
         
         startNewRound()
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
     }
 }
 

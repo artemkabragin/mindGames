@@ -92,12 +92,6 @@ final class ReactionGameViewModel: ObservableObject {
         
         showResult = true
         isOnboardingRoundsCompleted = (onboardingRoundCount == roundCount)
-        isGreen = false
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
-            if isPlaying {
-                startGame()
-            }
-        }
+        stopGame()
     }
 }

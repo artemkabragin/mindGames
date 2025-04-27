@@ -15,6 +15,9 @@ struct OnboardingHelloScreenView: View {
     
     @StateObject var viewModel = OnboardingViewModel()
     
+//    @EnvironmentObject var appState: AppState
+
+    
     var body: some View {
         
         NavigationStack(path: $viewModel.navigationPath) {
@@ -30,6 +33,7 @@ struct OnboardingHelloScreenView: View {
                 viewModel.destination(for: screen)
             }
         }
+//        .environmentObject(appState)
     }
 }
 

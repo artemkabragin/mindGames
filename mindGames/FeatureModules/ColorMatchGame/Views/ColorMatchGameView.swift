@@ -2,9 +2,55 @@ import SwiftUI
 
 struct ColorMatchGameView: View {
     
-    @StateObject private var viewModel = ColorMatchGameViewModel()
+    @StateObject private var viewModel = ColorMatchGameViewModel(onboardingRoundCount: 1)
+    @ObservedObject var onboardingViewModel: OnboardingViewModel
+    let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
     
     var body: some View {
+        ZStack {
+            gameView
+            
+            if !viewModel.hasSeenTutorial {
+                ColorMatchGameOnboardingView(viewModel: viewModel)
+            }
+        }
+        .onAppear {
+            viewModel.startGame()
+        }
+        .onDisappear {
+            viewModel.stopTimer()
+        }
+        .alert(
+            "Тестирование завершено",
+            isPresented: $viewModel.isOnboardingRoundsCompleted
+        ) {
+            Button("Далее") {
+                onboardingViewModel.navigationPath.append(OnboardingScreen.finish)
+            }
+        } message: {
+            let result = onboardingGameResultCalculator.calculateResult(
+                gameType: .colorMatch,
+                attempts: viewModel.attempts
+            )
+            Text("Ваш средний результат - \(Int(result)).")
+        }
+        .alert(
+            "Игра окончена",
+            isPresented: $viewModel.isGameOver
+        ) {
+            Button("Сыграть еще?") {
+                viewModel.startGame()
+            }
+        } message: {
+            Text("Счет: \(viewModel.score)")
+        }
+    }
+}
+
+// MARK: - Game view
+
+private extension ColorMatchGameView {
+    var gameView: some View {
         VStack {
             HStack {
                 Text("Счёт: \(viewModel.score)")
@@ -47,19 +93,9 @@ struct ColorMatchGameView: View {
             
             Spacer()
         }
-        .onAppear {
-            viewModel.startGame()
-        }
-        .alert("Игра окончена", isPresented: $viewModel.isGameOver) {
-            Button("Сыграть еще?") {
-                viewModel.startGame()
-            }
-        } message: {
-            Text("Счет: \(viewModel.score)")
-        }
     }
 }
 
 #Preview {
-    ColorMatchGameView()
+    ColorMatchGameView(onboardingViewModel: OnboardingViewModel())
 }
