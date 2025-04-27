@@ -16,9 +16,9 @@ final class AppState: ObservableObject {
     // MARK: - Init
     
     private init() {
-//        showOnboarding = true
-//        hasSeenCardFlipTutorial = false
-//        hasSeenReactionTutorial = false
-//        hasSeenColorMatchTutorial = false
+        showOnboarding = true
+        hasSeenCardFlipTutorial = false
+        hasSeenReactionTutorial = false
+        hasSeenColorMatchTutorial = false
     }
 }

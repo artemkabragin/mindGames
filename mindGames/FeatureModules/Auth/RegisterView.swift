@@ -46,14 +46,10 @@ struct RegisterView: View {
         errorMessage = nil
         
         do {
-            let authenticated = try await authService.register(
+            let _ = try await authService.register(
                 username: username,
                 password: password
             )
-            DispatchQueue.main.async {
-//                isLoggedIn = true
-                print("Token: \(authenticated.value)")
-            }
         } catch {
             if let errorResponse = error as? ErrorResponse {
                 errorMessage = "\(errorResponse.reason)"

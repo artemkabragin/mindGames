@@ -45,14 +45,10 @@ struct LoginView: View {
     
     func login() async {
         do {
-            let authenticated = try await authService.login(
+            let _ = try await authService.login(
                 username: username,
                 password: password
             )
-            DispatchQueue.main.async {
-                isLoggedIn = true
-                print("Token: \(authenticated.value)")
-            }
         } catch {
             if let errorResponse = error as? ErrorResponse {
                 errorMessage = "\(errorResponse.reason)"

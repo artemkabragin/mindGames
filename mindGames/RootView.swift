@@ -11,14 +11,13 @@ struct RootView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
-            AuthView()
             
-//            NavigationStack(path: $viewModel.navigationPath) {
-//                MainScreenView(viewModel: viewModel)
-//                    .navigationDestination(for: MainScreenDestination.self) { screen in
-//                        destination(for: screen)
-//                    }
-//            }
+            NavigationStack(path: $viewModel.navigationPath) {
+                MainScreenView(viewModel: viewModel)
+                    .navigationDestination(for: MainScreenDestination.self) { screen in
+                        destination(for: screen)
+                    }
+            }
             
             if let type = bannerService.bannerType {
                 BannerView(banner: type)

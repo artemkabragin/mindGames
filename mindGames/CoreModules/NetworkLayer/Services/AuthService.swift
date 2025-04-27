@@ -1,3 +1,4 @@
+import SwiftUI
 import KeychainAccess
 
 private enum KeychainKeys {
@@ -5,11 +6,13 @@ private enum KeychainKeys {
     static let serviceKey = "com.mindgames.auth"
 }
 
-final class AuthService {
+final class AuthService: ObservableObject {
     
     // MARK: - Static Properties
     
     static let shared = AuthService()
+    
+    @Published var isLoggedIn: Bool = false
     
     // MARK: - Private Properties
     
@@ -18,16 +21,16 @@ final class AuthService {
     
     // MARK: - Init
     
-    private init() {}
+    private init() {
+        logout()
+        isLoggedIn = isUserLoggedIn()
+    }
     
     // MARK: - Public Methods
     
     // Проверка, залогинен ли пользователь
     func isUserLoggedIn() -> Bool {
-        if let _ = keychain[KeychainKeys.authToken] {
-            return true
-        }
-        return false
+        return getAuthToken() != nil
     }
     
     // Получение токена из Keychain
@@ -37,24 +40,27 @@ final class AuthService {
     
     // Сохранение токена в Keychain
     func saveAuthToken(_ token: String) {
+        isLoggedIn = true
         keychain[KeychainKeys.authToken] = token
     }
     
     // Удаление токена (для выхода)
     func logout() {
+        isLoggedIn = false
         keychain[KeychainKeys.authToken] = nil
     }
     
     func register(
         username: String,
         password: String
-    ) async throws -> Token {
+    ) async throws {
         let body = UserRegisterRequest(
             username: username,
             password: password
         )
         do {
-            return try await client.sendRequest(requestType: .register(body))
+            let authToken: AuthToken = try await client.sendRequest(requestType: .register(body))
+            saveAuthToken(authToken.value)
         } catch {
             throw error
         }
@@ -64,20 +70,16 @@ final class AuthService {
     func login(
         username: String,
         password: String
-    ) async throws -> Token {
+    ) async throws {
         let body = UserCredentials(
             username: username,
             password: password
-        )        
+        )
         do {
-            return try await client.sendRequest(requestType: .login(body))
+            let authToken: AuthToken = try await client.sendRequest(requestType: .login(body))
+            saveAuthToken(authToken.value)
         } catch {
             throw error
         }
     }
-}
-
-
-public struct ErrorResponse: Decodable, Equatable, Error {
-    public var reason: String
 }
