@@ -10,13 +10,13 @@ private enum Constants {
         .orange
     ]
     static let time = 5
+    static let onboardingRoundCount = 1
 }
 
 final class ColorMatchGameViewModel: ObservableObject {
     
     // MARK: - Public Properties
     
-    @AppStorage("hasSeenColorMatchTutorial") var hasSeenTutorial: Bool = false
     @Published var score = 0
     @Published var timeRemaining = Constants.time
     @Published var isGameOver = false
@@ -34,9 +34,12 @@ final class ColorMatchGameViewModel: ObservableObject {
     
     // MARK: - Init
     
-    init(onboardingRoundCount: Int? = nil) {
-        self.onboardingRoundCount = onboardingRoundCount
-        hasSeenTutorial = false
+    init() {
+        if AppState.shared.showOnboarding {
+            self.onboardingRoundCount = Constants.onboardingRoundCount
+        } else {
+            self.onboardingRoundCount = nil
+        }
     }
     
     // MARK: - Public Methods
@@ -44,7 +47,7 @@ final class ColorMatchGameViewModel: ObservableObject {
     func startGame() {
         startNewRound()
         
-        guard hasSeenTutorial else { return }
+        guard AppState.shared.hasSeenColorMatchTutorial else { return }
         
         guard onboardingRoundCount != roundCount else {
             isOnboardingRoundsCompleted = true

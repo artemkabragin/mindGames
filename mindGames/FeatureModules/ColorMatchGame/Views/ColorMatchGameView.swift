@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ColorMatchGameView: View {
     
-    @StateObject private var viewModel = ColorMatchGameViewModel(onboardingRoundCount: 1)
+    @StateObject private var viewModel = ColorMatchGameViewModel()
     @ObservedObject var onboardingViewModel: OnboardingViewModel
     let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
     
@@ -10,7 +10,7 @@ struct ColorMatchGameView: View {
         ZStack {
             gameView
             
-            if !viewModel.hasSeenTutorial {
+            if !AppState.shared.hasSeenColorMatchTutorial {
                 ColorMatchGameOnboardingView(viewModel: viewModel)
             }
         }

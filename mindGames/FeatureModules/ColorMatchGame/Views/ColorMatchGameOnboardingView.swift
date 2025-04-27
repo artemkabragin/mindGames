@@ -66,7 +66,7 @@ private extension ColorMatchGameOnboardingView {
     var nextButton: some View {
         Button(action: {
             withAnimation {
-                viewModel.hasSeenTutorial = true
+                AppState.shared.hasSeenColorMatchTutorial = true
                 viewModel.startGame()
             }
         }) {

@@ -11,55 +11,7 @@ private enum Constants {
     ]
     
     static let time: Int = 5
-}
-
-enum GameSource {
-    case onboarding
-    case `default`
-}
-
-//class OnboardingGameViewModel {
-//    
-//    // MARK: - Public Properties
-//    
-//    @Published var isOnboardingRoundsCompleted = false
-//    
-//    // MARK: - Private Properties
-//    
-//    private let onboardingRoundCount: Int
-//    private var roundCount: Int = 0
-//    
-//    // MARK: - Init
-//    
-//    init(onboardingRoundCount: Int) {
-//        self.onboardingRoundCount = onboardingRoundCount
-//    }
-//    
-//    func startNewGame() {
-//        
-//    }
-//}
-
-struct OnboardingGameResult {
-    let gameType: GameType
-    let result: Int
-}
-
-final class OnboardingGameResultCalculator {
-    
-    static let shared = OnboardingGameResultCalculator()
-    
-    func calculateResult(
-        gameType: GameType,
-        attempts: [Double]
-    ) -> Double {
-        let sum = attempts.reduce(0, +)
-        let count = attempts.count
-        
-        guard count > 0 else { return 0 }
-        
-        return sum / Double(count)
-    }
+    static let onboardingRoundCount = 1
 }
 
 final class CardFlipGameViewModel: ObservableObject {
@@ -87,10 +39,12 @@ final class CardFlipGameViewModel: ObservableObject {
     
     // MARK: - Init
     
-    init(
-        onboardingRoundCount: Int? = nil
-    ) {
-        self.onboardingRoundCount = onboardingRoundCount
+    init() {
+        if AppState.shared.showOnboarding {
+            self.onboardingRoundCount = Constants.onboardingRoundCount
+        } else {
+            self.onboardingRoundCount = nil
+        }
     }
     
     // MARK: - Public Methods

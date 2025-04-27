@@ -1,5 +1,9 @@
 import SwiftUI
 
+private enum Constants {
+    static let onboardingRoundCount = 1
+}
+
 final class ReactionGameViewModel: ObservableObject {
     
     // MARK: - Public Properties
@@ -11,30 +15,28 @@ final class ReactionGameViewModel: ObservableObject {
     @Published var isPlaying = false
     @Published var showResult = false
     @Published var isOnboardingRoundsCompleted = false
-    @AppStorage("hasSeenReactionTutorial") var hasSeenTutorial: Bool = false
     
     // MARK: - Private Properties
     
-    private var achievementManager: AchievementManager
+    private let achievementManager: AchievementManager = .shared
     private var roundCount: Int = 0
     let onboardingRoundCount: Int?
     var attempts: [Double] = []
     
     // MARK: - Init
     
-    init(
-        achievementManager: AchievementManager = .shared,
-        onboardingRoundCount: Int? = nil
-    ) {
-        self.achievementManager = achievementManager
-        self.onboardingRoundCount = onboardingRoundCount
-        hasSeenTutorial = false
+    init() {
+        if AppState.shared.showOnboarding {
+            self.onboardingRoundCount = Constants.onboardingRoundCount
+        } else {
+            self.onboardingRoundCount = nil
+        }
     }
     
     // MARK: - Public Methods
     
     func startGame() {
-        guard hasSeenTutorial else { return }
+        guard AppState.shared.hasSeenReactionTutorial else { return }
         
         guard onboardingRoundCount != roundCount else {
             isOnboardingRoundsCompleted = true

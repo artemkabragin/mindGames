@@ -65,7 +65,7 @@ private extension ReactionGameOnboardingView {
     var nextButton: some View {
         Button(action: {
             withAnimation {
-                viewModel.hasSeenTutorial = true
+                AppState.shared.hasSeenReactionTutorial = true
             }
         }) {
             HStack {
