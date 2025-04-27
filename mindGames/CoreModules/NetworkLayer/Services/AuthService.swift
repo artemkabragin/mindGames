@@ -45,11 +45,26 @@ final class AuthService {
         keychain[KeychainKeys.authToken] = nil
     }
     
+    func register(
+        username: String,
+        password: String
+    ) async throws -> Token {
+        let body = UserRegisterRequest(
+            username: username,
+            password: password
+        )
+        do {
+            return try await client.sendRequest(requestType: .register(body))
+        } catch {
+            throw error
+        }
+    }
+    
     // Функция для логина
     func login(
         username: String,
         password: String
-    ) async throws -> Authenticated {
+    ) async throws -> Token {
         let body = UserCredentials(
             username: username,
             password: password
@@ -60,4 +75,9 @@ final class AuthService {
             throw error
         }
     }
+}
+
+
+public struct ErrorResponse: Decodable, Equatable, Error {
+    public var reason: String
 }

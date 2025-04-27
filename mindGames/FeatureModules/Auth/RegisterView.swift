@@ -1,17 +1,16 @@
 import SwiftUI
 
-struct LoginView: View {
+struct RegisterView: View {
     
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var errorMessage: String?
-    @State private var isLoggedIn: Bool = false
     
     let authService = AuthService.shared
     
     var body: some View {
         ZStack {
-            Color.blue.opacity(0.7).ignoresSafeArea(.all)
+            Color.orange.opacity(0.7).ignoresSafeArea(.all)
             
             VStack {
                 TextField("Username", text: $username)
@@ -22,9 +21,9 @@ struct LoginView: View {
                     .padding()
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                 
-                Button("Login") {
+                Button("Зарегистрироваться") {
                     Task {
-                        await login()
+                        await register()
                     }
                 }
                 .padding()
@@ -34,31 +33,35 @@ struct LoginView: View {
                         .foregroundColor(.red)
                 }
                 
-                if isLoggedIn {
-                    Text("Logged in successfully!")
-                        .foregroundColor(.green)
-                }
+//                if isLoggedIn {
+//                    Text("Logged in successfully!")
+//                        .foregroundColor(.green)
+//                }
             }
             .padding()
         }
     }
     
-    func login() async {
+    func register() async {
+        errorMessage = nil
+        
         do {
-            let authenticated = try await authService.login(
+            let authenticated = try await authService.register(
                 username: username,
                 password: password
             )
             DispatchQueue.main.async {
-                isLoggedIn = true
-                print("Token: \(authenticated.token)")
+//                isLoggedIn = true
+                print("Token: \(authenticated.value)")
             }
         } catch {
-            errorMessage = "Login failed: \(error.localizedDescription)"
+            if let errorResponse = error as? ErrorResponse {
+                errorMessage = "\(errorResponse.reason)"
+            }
         }
     }
 }
 
 #Preview {
-    LoginView()
+    RegisterView()
 }

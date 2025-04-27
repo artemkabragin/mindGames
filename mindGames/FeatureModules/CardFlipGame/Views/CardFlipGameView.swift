@@ -2,7 +2,6 @@ import SwiftUI
 
 struct CardFlipGameView: View {
         
-    
     @StateObject private var viewModel = CardFlipGameViewModel()
     @ObservedObject var onboardingViewModel: OnboardingViewModel
     let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared

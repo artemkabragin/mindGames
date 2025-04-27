@@ -31,6 +31,9 @@ final class HTTPClient {
         
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
+            if let errorResponse = try? decoder.decode(ErrorResponse.self, from: data) {
+                throw errorResponse
+            }
             do {
                 let responseDTO = try decoder.decode(ResponseDTO.self, from: data)
                 return responseDTO

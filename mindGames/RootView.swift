@@ -11,7 +11,7 @@ struct RootView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
-            LoginView()
+            AuthView()
             
 //            NavigationStack(path: $viewModel.navigationPath) {
 //                MainScreenView(viewModel: viewModel)
