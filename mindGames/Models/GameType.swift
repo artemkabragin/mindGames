@@ -1,8 +1,6 @@
 import Foundation
 
-enum GameType: String, CaseIterable, Codable, Identifiable {
-    var id: UUID { return UUID() }
-    
+enum GameType: String, CaseIterable, Codable {    
     case cardFlip
     case reaction
     case colorMatch

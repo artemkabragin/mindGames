@@ -4,6 +4,7 @@ private enum Constants {
     static let navigationTitle = "Mind Games"
     static let achievementsSectionTitle = "Достижения"
     static let personIconSystemName = "person.circle.fill"
+    
 }
 
 struct MainScreenView: View {
@@ -41,10 +42,10 @@ private extension MainScreenView {
     var gamesSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 20) {
-                ForEach(GameType.allCases) { gameType in
-                    GameCell(gameType: gameType)
+                ForEach(Game.games) { game in
+                    GameCell(gameType: game.type)
                         .onTapGesture {
-                            viewModel.navigationPath.append(MainScreenDestination.game(gameType))
+                            viewModel.navigationPath.append(MainScreenDestination.game(game.type))
                         }
                 }
             }

@@ -3,5 +3,4 @@ enum AchievementType: String, Codable {
     case highScore
     case totalPlays
     case perfectScore
-    case timeBased
 }
