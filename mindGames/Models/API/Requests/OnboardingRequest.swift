@@ -1,3 +1,4 @@
 struct OnboardingRequest: Encodable {
-    var attempts: [Double]
+    let gameType: GameType
+    let attempts: [Double]
 }

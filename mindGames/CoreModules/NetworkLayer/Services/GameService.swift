@@ -17,7 +17,10 @@ final class GameService {
         _ attempt: Double,
         gameType: GameType
     ) async throws {
-        let body = GameAttemptRequest(attempt: attempt)
+        let body = GameAttemptRequest(
+            gameType: gameType,
+            attempt: attempt
+        )
         do {
             let status: String = try await client.sendRequest(requestType: .play(body))
             print(status)
@@ -30,7 +33,10 @@ final class GameService {
         _ attempts: [Double],
         gameType: GameType
     ) async throws -> Double {
-        let body = OnboardingRequest(attempts: attempts)
+        let body = OnboardingRequest(
+            gameType: gameType,
+            attempts: attempts
+        )
         do {
             let initialAverage: Double = try await client.sendRequest(requestType: .onboarding(body))
             print(initialAverage)

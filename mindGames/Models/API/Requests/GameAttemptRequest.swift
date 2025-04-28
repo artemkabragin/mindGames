@@ -1,3 +1,4 @@
 struct GameAttemptRequest: Encodable {
-    var attempt: Double
+    let gameType: GameType
+    let attempt: Double
 }

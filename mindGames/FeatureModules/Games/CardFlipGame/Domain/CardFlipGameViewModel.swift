@@ -26,7 +26,15 @@ final class CardFlipGameViewModel: ObservableObject {
     
     var attempts: [Double] = []
     
-    @Published var isOnboardingRoundsCompleted = false
+    @Published var isOnboardingRoundsCompleted = false {
+        didSet {
+            if isOnboardingRoundsCompleted {
+                Task {
+                    await sendOnboardingResult()
+                }
+            }
+        }
+    }
     
     let onboardingRoundCount: Int?
     
@@ -145,7 +153,16 @@ private extension CardFlipGameViewModel {
         let isGameWin = cards.allSatisfy { $0.isMatched }
         
         if isGameWin {
-            attempts.append(Double(timeRemaining))
+            let doubleTime = Double(timeRemaining)
+            attempts.append(doubleTime)
+            if !AppState.shared.showOnboarding {
+                Task {
+                    try? await GameService.shared.sendAttempt(
+                        doubleTime,
+                        gameType: .cardFlip
+                    )
+                }
+            }
         }
         
         if let onboardingRoundCount {
@@ -153,5 +170,13 @@ private extension CardFlipGameViewModel {
         } else {
             self.isGameWin = isGameWin
         }
+    }
+    
+    func sendOnboardingResult() async {
+        let result = try? await GameService.shared.sendOnboardingAttempts(
+            attempts,
+            gameType: .cardFlip
+        )
+        print("Onboarding result in \(GameType.cardFlip) - \(result ?? 0)")
     }
 }

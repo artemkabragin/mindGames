@@ -1,3 +1,3 @@
 struct GameProgressRequest: Encodable {
-    var gameType: GameType
+    let gameType: GameType
 }

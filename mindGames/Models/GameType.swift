@@ -17,11 +17,11 @@ enum GameType: String, CaseIterable, Codable {
     var description: String {
         switch self {
         case .cardFlip:
-            "Match pairs of cards with the same color"
+            "Соедините пары карточек одного цвета"
         case .reaction:
-            "Tap the green circle as fast as you can"
+            "Нажимайте на зеленый круг как можно быстрее"
         case .colorMatch:
-            "Match the color name with its actual color"
+            "Выберите цвет, которым изображено слово"
         }
     }
     

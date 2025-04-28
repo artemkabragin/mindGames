@@ -9,8 +9,8 @@ struct UserProfileView: View {
     
     var body: some View {
         VStack {
-            photoView
-            userNameView
+//            photoView
+//            userNameView
             attentionProgressView
             reactionProgressView
             logoutButton
@@ -61,7 +61,7 @@ private extension UserProfileView {
                 .font(.headline)
             ProgressBar(value: attentionProgress / 100)
                 .animation(.easeOut(duration: 1.0), value: attentionProgress)
-            Text("Текущий прогресс: \(Int(attentionProgress))%")
+            Text("Текущий прирост: \(Int(attentionProgress))%")
                 .padding(.bottom, 20)
         }
     }
@@ -76,7 +76,7 @@ private extension UserProfileView {
                 .font(.headline)
             ProgressBar(value: reactionProgress / 100)
                 .animation(.easeOut(duration: 1.0), value: reactionProgress)
-            Text("Текущий прогресс: \(Int(reactionProgress))%")
+            Text("Текущий прирост: \(Int(reactionProgress))%")
                 .padding(.bottom, 20)
         }
     }
@@ -89,7 +89,7 @@ private extension UserProfileView {
         Button(action: {
             logout()
         }) {
-            Text("Выйти")
+            Text("Выйти из аккаунта")
                 .frame(maxWidth: .infinity)
                 .padding()
                 .background(Color.red)
@@ -107,7 +107,7 @@ private struct ProgressBar: View {
     
     var body: some View {
         ProgressView(value: value, total: 1.0)
-            .progressViewStyle(LinearProgressViewStyle())
+            .progressViewStyle(.linear)
             .accentColor(.green)
             .padding(.bottom, 10)
     }

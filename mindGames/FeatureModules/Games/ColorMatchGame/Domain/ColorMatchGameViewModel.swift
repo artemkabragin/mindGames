@@ -23,7 +23,15 @@ final class ColorMatchGameViewModel: ObservableObject {
     @Published var showResult = false
     @Published var currentAnswers: [ColorAnswer] = []
     @Published var currentQuestion: ColorQuestion?
-    @Published var isOnboardingRoundsCompleted = false
+    @Published var isOnboardingRoundsCompleted = false {
+        didSet {
+            if isOnboardingRoundsCompleted {
+                Task {
+                    await sendOnboardingResult()
+                }
+            }
+        }
+    }
     private var roundCount: Int = 0
     var attempts: [Double] = []
     
@@ -65,7 +73,16 @@ final class ColorMatchGameViewModel: ObservableObject {
             if timeRemaining > 0 {
                 timeRemaining -= 1
             } else {
-                attempts.append(Double(score))
+                let score = Double(score)
+                attempts.append(score)
+                if !AppState.shared.showOnboarding {
+                    Task {
+                        try? await GameService.shared.sendAttempt(
+                            score,
+                            gameType: .colorMatch
+                        )
+                    }
+                }
                 if onboardingRoundCount == roundCount {
                     isOnboardingRoundsCompleted = true
                 } else {
@@ -116,5 +133,13 @@ private extension ColorMatchGameViewModel {
         answers.append(ColorAnswer(color: randomColor))
         
         currentAnswers = answers.shuffled()
+    }
+    
+    func sendOnboardingResult() async {
+        let result = try? await GameService.shared.sendOnboardingAttempts(
+            attempts,
+            gameType: .colorMatch
+        )
+        print("Onboarding result in \(GameType.colorMatch) - \(result ?? 0)")
     }
 }
