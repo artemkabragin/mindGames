@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AchievementCell: View {
-    let achievement: Achievement
+    let achievement: AchievementWithProgress
     
     var body: some View {
         HStack {

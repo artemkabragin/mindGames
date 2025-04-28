@@ -67,10 +67,10 @@ final class ReactionGameViewModel: ObservableObject {
             }
         }
         
-        achievementManager.updateAchievement(
-            for: .reaction,
-            action: .gamePlayed
-        )
+//        achievementManager.updateAchievement(
+//            for: .reaction,
+//            action: .gamePlayed
+//        )
     }
     
     func stopGame() {
@@ -91,10 +91,10 @@ final class ReactionGameViewModel: ObservableObject {
         
         guard let reactionTime else { return }
         
-        achievementManager.updateAchievement(
-            for: .reaction,
-            action: .newRecord(reactionTime)
-        )
+//        achievementManager.updateAchievement(
+//            for: .reaction,
+//            action: .newRecord(reactionTime)
+//        )
         
         if bestTime == nil || reactionTime < bestTime! {
             bestTime = reactionTime

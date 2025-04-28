@@ -57,8 +57,3 @@ final class GameService {
         }
     }
 }
-
-enum ProgressType: String, Encodable {
-    case memory
-    case attention
-}

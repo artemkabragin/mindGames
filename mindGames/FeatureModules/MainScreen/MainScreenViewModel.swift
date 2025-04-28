@@ -2,7 +2,7 @@ import SwiftUI
 
 final class MainScreenViewModel: ObservableObject {
     @Published var navigationPath = NavigationPath()
-    @Published var achivements: [Achievement] = []
+    @Published var achivements: [AchievementWithProgress] = []
     
     private let achievementManager: AchievementManager
     

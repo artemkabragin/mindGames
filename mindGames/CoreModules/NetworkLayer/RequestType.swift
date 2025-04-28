@@ -6,6 +6,7 @@ enum RequestType {
     case onboarding(OnboardingRequest)
     case play(GameAttemptRequest)
     case progress(GameProgressRequest)
+    case achievements
     
     var url: URL {
         switch self {
@@ -19,6 +20,8 @@ enum RequestType {
             URL(string: "http://localhost:8080/users/onboarding")!
         case .play:
             URL(string: "http://localhost:8080/users/play")!
+        case .achievements:
+            URL(string: "http://localhost:8080/users/achievement")!
         }
     }
     
@@ -33,6 +36,8 @@ enum RequestType {
         case .play:
             "POST"
         case .progress:
+            "GET"
+        case .achievements:
             "GET"
         }
     }
