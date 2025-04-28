@@ -14,7 +14,7 @@ enum RequestType {
         case .register:
             URL(string: "http://localhost:8080/auth/register")!
         case .progress(let request):
-            URL(string: "http://localhost:8080/users/progress?gameType=\(request.gameType.rawValue)")!
+            URL(string: "http://localhost:8080/users/progress?type=\(request.type.rawValue)")!
         case .onboarding:
             URL(string: "http://localhost:8080/users/onboarding")!
         case .play:

@@ -4,8 +4,8 @@ struct UserProfileView: View {
     
     @ObservedObject var authService = AuthService.shared
     
+    @State private var memoryProgress: Double = 0
     @State private var attentionProgress: Double = 0
-    @State private var reactionProgress: Double = 0
     
     var body: some View {
         VStack {
@@ -16,10 +16,10 @@ struct UserProfileView: View {
             logoutButton
         }
         .task {
-            let reactionProgressValue = try? await GameService.shared.getProgress(by: .reaction)
-            reactionProgress = reactionProgressValue ?? 0
+            let memoryProgressValue = try? await GameService.shared.getProgress(by: .memory)
+            memoryProgress = memoryProgressValue ?? 0
             
-            let attentionProgressValue = try? await GameService.shared.getProgress(by: .cardFlip)
+            let attentionProgressValue = try? await GameService.shared.getProgress(by: .attention)
             attentionProgress = attentionProgressValue ?? 0
         }
         .padding()
@@ -52,6 +52,21 @@ private extension UserProfileView {
     }
 }
 
+// MARK: - Memory Progress
+
+private extension UserProfileView {
+    var reactionProgressView: some View {
+        VStack(alignment: .leading) {
+            Text("Прогресс по памяти")
+                .font(.headline)
+            ProgressBar(value: memoryProgress / 100)
+                .animation(.easeOut(duration: 1.0), value: memoryProgress)
+            Text("Текущий прирост: \(Int(memoryProgress))%")
+                .padding(.bottom, 20)
+        }
+    }
+}
+
 // MARK: - Attention Progress
 
 private extension UserProfileView {
@@ -62,21 +77,6 @@ private extension UserProfileView {
             ProgressBar(value: attentionProgress / 100)
                 .animation(.easeOut(duration: 1.0), value: attentionProgress)
             Text("Текущий прирост: \(Int(attentionProgress))%")
-                .padding(.bottom, 20)
-        }
-    }
-}
-
-// MARK: - Reaction Progress
-
-private extension UserProfileView {
-    var reactionProgressView: some View {
-        VStack(alignment: .leading) {
-            Text("Прогресс по реакции")
-                .font(.headline)
-            ProgressBar(value: reactionProgress / 100)
-                .animation(.easeOut(duration: 1.0), value: reactionProgress)
-            Text("Текущий прирост: \(Int(reactionProgress))%")
                 .padding(.bottom, 20)
         }
     }

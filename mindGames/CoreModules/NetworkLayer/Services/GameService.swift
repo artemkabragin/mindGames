@@ -46,8 +46,8 @@ final class GameService {
         }
     }
     
-    func getProgress(by gameType: GameType) async throws -> Double {
-        let body = GameProgressRequest(gameType: gameType)
+    func getProgress(by type: ProgressType) async throws -> Double {
+        let body = GameProgressRequest(type: type)
         do {
             let progress: ProgressResponse = try await client.sendRequest(requestType: .progress(body))
             print(progress)
@@ -56,4 +56,9 @@ final class GameService {
             throw error
         }
     }
+}
+
+enum ProgressType: String, Encodable {
+    case memory
+    case attention
 }
