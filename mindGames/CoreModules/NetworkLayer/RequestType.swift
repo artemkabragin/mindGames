@@ -3,9 +3,11 @@ import Foundation
 enum RequestType {
     case login(UserCredentials)
     case register(UserRegisterRequest)
+    
     case onboarding(OnboardingRequest)
     case play(GameAttemptRequest)
     case progress(GameProgressRequest)
+    
     case achievements
     
     var url: URL {
