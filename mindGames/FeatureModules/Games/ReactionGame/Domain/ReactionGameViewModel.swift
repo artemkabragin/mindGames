@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum Constants {
-    static let onboardingRoundCount = 1
+    static let onboardingRoundCount = 3
 }
 
 final class ReactionGameViewModel: ObservableObject {
@@ -14,14 +14,24 @@ final class ReactionGameViewModel: ObservableObject {
     @Published var bestTime: Double?
     @Published var isPlaying = false
     @Published var showResult = false
-    @Published var isOnboardingRoundsCompleted = false
+    @Published var isOnboardingRoundsCompleted = false {
+        didSet {
+            if isOnboardingRoundsCompleted {
+                Task {
+                    await sendOnboardingResult()
+                }
+            }
+        }
+    }
+    @Published var onboardingResult: Double = 0
     
     // MARK: - Private Properties
     
     private let achievementManager: AchievementManager = .shared
     private var roundCount: Int = 0
-    let onboardingRoundCount: Int?
-    var attempts: [Double] = []
+    private let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
+    private let onboardingRoundCount: Int?
+    private var attempts: [Double] = []
     
     // MARK: - Init
     
@@ -92,8 +102,25 @@ final class ReactionGameViewModel: ObservableObject {
         
         attempts.append(reactionTime)
         
+        if !AppState.shared.showOnboarding {
+            Task {
+                try? await GameService.shared.sendAttempt(
+                    reactionTime,
+                    gameType: .reaction
+                )
+            }
+        }
+        
         showResult = true
         isOnboardingRoundsCompleted = (onboardingRoundCount == roundCount)
         stopGame()
+    }
+    
+    func sendOnboardingResult() async {
+        let result = try? await GameService.shared.sendOnboardingAttempts(
+            attempts,
+            gameType: .reaction
+        )
+        print("Onboarding result in \(GameType.reaction) - \(result ?? 0)")
     }
 }

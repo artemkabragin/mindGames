@@ -7,7 +7,6 @@ struct ReactionGameView: View {
     @ObservedObject var appState: AppState = .shared
     @StateObject private var viewModel: ReactionGameViewModel = ReactionGameViewModel()
     @ObservedObject var onboardingViewModel: OnboardingViewModel
-    let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
     
     var body: some View {
         ZStack {
@@ -30,12 +29,6 @@ struct ReactionGameView: View {
             Button("Далее") {
                 onboardingViewModel.navigationPath.append(OnboardingDestination.colorMatch)
             }
-        } message: {
-            let result = onboardingGameResultCalculator.calculateResult(
-                gameType: .reaction,
-                attempts: viewModel.attempts
-            )
-            Text("Ваш средний результат - \(result).")
         }
     }
 }

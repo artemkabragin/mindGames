@@ -27,17 +27,14 @@ final class AuthService: ObservableObject {
     
     // MARK: - Public Methods
     
-    // Проверка, залогинен ли пользователь
     func isUserLoggedIn() -> Bool {
         return getAuthToken() != nil
     }
     
-    // Получение токена из Keychain
     func getAuthToken() -> String? {
         return keychain[KeychainKeys.authToken]
     }
     
-    // Сохранение токена в Keychain
     func saveAuthToken(_ token: String) async {
         keychain[KeychainKeys.authToken] = token
         await MainActor.run {
@@ -45,7 +42,6 @@ final class AuthService: ObservableObject {
         }
     }
     
-    // Удаление токена (для выхода)
     func logout() {
         isLoggedIn = false
         keychain[KeychainKeys.authToken] = nil

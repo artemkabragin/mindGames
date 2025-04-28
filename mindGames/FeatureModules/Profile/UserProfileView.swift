@@ -1,14 +1,11 @@
 import SwiftUI
 
-class ProgressCalculator {
-    
-}
-
 struct UserProfileView: View {
     
     @ObservedObject var authService = AuthService.shared
-    @State private var attentionProgress: Double = 0.75 // Примерное значение
-    @State private var reactionProgress: Double = 0.60 // Примерное значение
+    
+    @State private var attentionProgress: Double = 0
+    @State private var reactionProgress: Double = 0
     
     var body: some View {
         VStack {
@@ -43,24 +40,17 @@ struct UserProfileView: View {
             VStack(alignment: .leading) {
                 Text("Прогресс по реакции")
                     .font(.headline)
-                ProgressBar(value: reactionProgress)
-                Text("Текущий прогресс: \(Int(reactionProgress * 100))%")
+                ProgressBar(value: reactionProgress / 100)
+                Text("Текущий прогресс: \(Int(reactionProgress))%")
                     .padding(.bottom, 20)
             }
             
-            // Кнопка выхода
-            Button(action: {
-                logout()
-            }) {
-                Text("Выйти")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .padding(.top, 20)
+            logoutButton
             
+        }
+        .task {
+            let progress = try? await GameService.shared.getProgress(by: .reaction)
+            reactionProgress = progress ?? 0
         }
         .padding()
     }
@@ -71,7 +61,27 @@ struct UserProfileView: View {
     }
 }
 
-struct ProgressBar: View {
+// MARK: - Logout Button
+
+private extension UserProfileView {
+    var logoutButton: some View {
+        Button(action: {
+            logout()
+        }) {
+            Text("Выйти")
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+        }
+        .padding(.top, 20)
+    }
+}
+
+// MARK: - ProgressBar
+
+private struct ProgressBar: View {
     var value: Double
     
     var body: some View {

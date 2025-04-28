@@ -17,12 +17,14 @@ final class HTTPClient {
     
     // MARK: - Public Methods
     
-    func sendRequest<ResponseDTO: Decodable>(
-        requestType: RequestType
-    ) async throws -> ResponseDTO {
+    func sendRequest<Response: Decodable>(requestType: RequestType) async throws -> Response {
         var request = URLRequest(url: requestType.url)
         request.httpMethod = requestType.method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        if let token = AuthService.shared.getAuthToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
         if let body = requestType.body {
             guard let jsonData = try? encoder.encode(body) else { throw HTTPClientError.badEncode }
@@ -35,7 +37,7 @@ final class HTTPClient {
                 throw errorResponse
             }
             do {
-                let responseDTO = try decoder.decode(ResponseDTO.self, from: data)
+                let responseDTO = try decoder.decode(Response.self, from: data)
                 return responseDTO
             } catch {
                 throw error

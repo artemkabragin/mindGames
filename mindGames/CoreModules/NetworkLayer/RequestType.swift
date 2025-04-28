@@ -3,6 +3,8 @@ import Foundation
 enum RequestType {
     case login(UserCredentials)
     case register(UserRegisterRequest)
+    case onboarding(OnboardingRequest)
+    case play(GameAttemptRequest)
     case progress
     
     var url: URL {
@@ -12,10 +14,12 @@ enum RequestType {
         case .register:
             URL(string: "http://localhost:8080/auth/register")!
         case .progress:
-            URL(string: "http://localhost:8080/person/progress")!
+            URL(string: "http://localhost:8080/users/progress")!
+        case .onboarding:
+            URL(string: "http://localhost:8080/users/onboarding")!
+        case .play:
+            URL(string: "http://localhost:8080/users/play")!
         }
-//        [ NOTICE ] Server started on http://127.0.0.1:8080
-
     }
     
     var method: String {
@@ -24,6 +28,10 @@ enum RequestType {
             "POST"
         case .register:
             "POST"
+        case .onboarding:
+            "POST"
+        case .play:
+            "POST"
         case .progress:
             "GET"
         }
@@ -31,10 +39,14 @@ enum RequestType {
     
     var body: Encodable? {
         switch self {
-        case .login(let credentials):
-            credentials
-        case .register(let credentials):
-            credentials
+        case .login(let request):
+            request
+        case .play(let request):
+            request
+        case .register(let request):
+            request
+        case .onboarding(let request):
+            request
         default:
             nil
         }
