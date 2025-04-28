@@ -5,7 +5,7 @@ enum RequestType {
     case register(UserRegisterRequest)
     case onboarding(OnboardingRequest)
     case play(GameAttemptRequest)
-    case progress
+    case progress(GameProgressRequest)
     
     var url: URL {
         switch self {
@@ -13,8 +13,8 @@ enum RequestType {
             URL(string: "http://localhost:8080/auth/login")!
         case .register:
             URL(string: "http://localhost:8080/auth/register")!
-        case .progress:
-            URL(string: "http://localhost:8080/users/progress")!
+        case .progress(let request):
+            URL(string: "http://localhost:8080/users/progress?gameType=\(request.gameType.rawValue)")!
         case .onboarding:
             URL(string: "http://localhost:8080/users/onboarding")!
         case .play:

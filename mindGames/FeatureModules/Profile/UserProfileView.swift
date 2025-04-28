@@ -9,55 +9,76 @@ struct UserProfileView: View {
     
     var body: some View {
         VStack {
-            // Заголовок
-            Text("Профиль пользователя")
-                .font(.largeTitle)
-                .bold()
-                .padding()
-            
-            // Фотография пользователя (например, аватар)
-            Image(systemName: "person.circle.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 120, height: 120)
-                .padding(.bottom, 20)
-            
-            // Имя пользователя
-            Text("Имя пользователя")
-                .font(.title2)
-                .padding(.bottom, 20)
-            
-            // Прогресс по играм (внимание)
-            VStack(alignment: .leading) {
-                Text("Прогресс по вниманию")
-                    .font(.headline)
-                ProgressBar(value: attentionProgress)
-                Text("Текущий прогресс: \(Int(attentionProgress * 100))%")
-                    .padding(.bottom, 20)
-            }
-            
-            // Прогресс по играм (реакция)
-            VStack(alignment: .leading) {
-                Text("Прогресс по реакции")
-                    .font(.headline)
-                ProgressBar(value: reactionProgress / 100)
-                Text("Текущий прогресс: \(Int(reactionProgress))%")
-                    .padding(.bottom, 20)
-            }
-            
+            photoView
+            userNameView
+            attentionProgressView
+            reactionProgressView
             logoutButton
-            
         }
         .task {
-            let progress = try? await GameService.shared.getProgress(by: .reaction)
-            reactionProgress = progress ?? 0
+            let reactionProgressValue = try? await GameService.shared.getProgress(by: .reaction)
+            reactionProgress = reactionProgressValue ?? 0
+            
+            let attentionProgressValue = try? await GameService.shared.getProgress(by: .cardFlip)
+            attentionProgress = attentionProgressValue ?? 0
         }
         .padding()
     }
     
-    // Функция выхода из аккаунта
     private func logout() {
         authService.logout()
+    }
+}
+
+// MARK: - Photo
+
+private extension UserProfileView {
+    var photoView: some View {
+        Image(systemName: "person.circle.fill")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 120, height: 120)
+            .padding(.bottom, 20)
+    }
+}
+
+// MARK: - Username
+
+private extension UserProfileView {
+    var userNameView: some View {
+        Text("Имя пользователя")
+            .font(.title2)
+            .padding(.bottom, 20)
+    }
+}
+
+// MARK: - Attention Progress
+
+private extension UserProfileView {
+    var attentionProgressView: some View {
+        VStack(alignment: .leading) {
+            Text("Прогресс по вниманию")
+                .font(.headline)
+            ProgressBar(value: attentionProgress / 100)
+                .animation(.easeOut(duration: 1.0), value: attentionProgress)
+            Text("Текущий прогресс: \(Int(attentionProgress))%")
+                .padding(.bottom, 20)
+        }
+    }
+}
+
+// MARK: - Reaction Progress
+
+private extension UserProfileView {
+    var reactionProgressView: some View {
+        VStack(alignment: .leading) {
+            Text("Прогресс по реакции")
+                .font(.headline)
+            ProgressBar(value: reactionProgress / 100)
+                .animation(.easeOut(duration: 1.0), value: reactionProgress)
+            Text("Текущий прогресс: \(Int(reactionProgress))%")
+                .padding(.bottom, 20)
+        }
     }
 }
 

@@ -41,8 +41,9 @@ final class GameService {
     }
     
     func getProgress(by gameType: GameType) async throws -> Double {
+        let body = GameProgressRequest(gameType: gameType)
         do {
-            let progress: ProgressResponse = try await client.sendRequest(requestType: .progress)
+            let progress: ProgressResponse = try await client.sendRequest(requestType: .progress(body))
             print(progress)
             return progress.progress
         } catch {

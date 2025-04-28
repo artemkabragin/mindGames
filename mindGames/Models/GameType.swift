@@ -1,4 +1,4 @@
-enum GameType: CaseIterable, Codable {
+enum GameType: String, CaseIterable, Codable {
     case cardFlip
     case reaction
     case colorMatch
