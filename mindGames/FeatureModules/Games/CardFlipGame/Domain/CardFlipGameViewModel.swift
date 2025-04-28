@@ -157,10 +157,13 @@ private extension CardFlipGameViewModel {
             attempts.append(doubleTime)
             if !AppState.shared.showOnboarding {
                 Task {
-                    try? await GameService.shared.sendAttempt(
+                    let achievements = try? await GameService.shared.sendAttempt(
                         doubleTime,
                         gameType: .cardFlip
                     )
+                    if let achievements {
+                        AchievementManager.shared.processNewAchievements(achievements)
+                    }
                 }
             }
         }

@@ -77,10 +77,13 @@ final class ColorMatchGameViewModel: ObservableObject {
                 attempts.append(score)
                 if !AppState.shared.showOnboarding {
                     Task {
-                        try? await GameService.shared.sendAttempt(
+                        let achievements = try? await GameService.shared.sendAttempt(
                             score,
                             gameType: .colorMatch
                         )
+                        if let achievements {
+                            AchievementManager.shared.processNewAchievements(achievements)
+                        }
                     }
                 }
                 if onboardingRoundCount == roundCount {

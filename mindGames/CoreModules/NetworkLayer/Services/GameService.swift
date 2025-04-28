@@ -10,20 +10,20 @@ final class GameService {
     
     // MARK: - Init
     
-    private init() {
-    }
+    private init() {}
     
     func sendAttempt(
         _ attempt: Double,
         gameType: GameType
-    ) async throws {
+    ) async throws -> [AchievementWithProgress] {
         let body = GameAttemptRequest(
             gameType: gameType,
             attempt: attempt
         )
         do {
-            let status: String = try await client.sendRequest(requestType: .play(body))
-            print(status)
+            let achivements: [AchievementWithProgress] = try await client.sendRequest(requestType: .play(body))
+            print(achivements)
+            return achivements
         } catch {
             throw error
         }

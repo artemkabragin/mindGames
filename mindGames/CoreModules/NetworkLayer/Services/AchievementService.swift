@@ -10,8 +10,9 @@ final class AchievementService {
     
     // MARK: - Init
     
-    private init() {
-    }
+    private init() {}
+    
+    // MARK: - Public Methods
     
     func loadAchievements() async throws -> [AchievementWithProgress] {
         do {
@@ -22,32 +23,4 @@ final class AchievementService {
             throw error
         }
     }
-    
-//    func sendOnboardingAttempts(
-//        _ attempts: [Double],
-//        gameType: GameType
-//    ) async throws -> Double {
-//        let body = OnboardingRequest(
-//            gameType: gameType,
-//            attempts: attempts
-//        )
-//        do {
-//            let initialAverage: Double = try await client.sendRequest(requestType: .onboarding(body))
-//            print(initialAverage)
-//            return initialAverage
-//        } catch {
-//            throw error
-//        }
-//    }
-//    
-//    func getProgress(by type: ProgressType) async throws -> Double {
-//        let body = GameProgressRequest(type: type)
-//        do {
-//            let progress: ProgressResponse = try await client.sendRequest(requestType: .progress(body))
-//            print(progress)
-//            return progress.progress
-//        } catch {
-//            throw error
-//        }
-//    }
 }

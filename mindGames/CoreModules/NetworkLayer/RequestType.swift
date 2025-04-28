@@ -21,7 +21,7 @@ enum RequestType {
         case .play:
             URL(string: "http://localhost:8080/users/play")!
         case .achievements:
-            URL(string: "http://localhost:8080/users/achievement")!
+            URL(string: "http://localhost:8080/users/achievements")!
         }
     }
     

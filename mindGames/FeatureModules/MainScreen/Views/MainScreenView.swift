@@ -41,10 +41,10 @@ private extension MainScreenView {
     var gamesSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 20) {
-                ForEach(Game.games) { game in
-                    GameCell(game: game)
+                ForEach(GameType.allCases) { gameType in
+                    GameCell(gameType: gameType)
                         .onTapGesture {
-                            viewModel.navigationPath.append(MainScreenDestination.game(game))
+                            viewModel.navigationPath.append(MainScreenDestination.game(gameType))
                         }
                 }
             }

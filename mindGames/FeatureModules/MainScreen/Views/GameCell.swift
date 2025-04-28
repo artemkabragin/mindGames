@@ -1,22 +1,22 @@
 import SwiftUI
 
 struct GameCell: View {
-    let game: Game
+    let gameType: GameType
     
     var body: some View {
         VStack {
-            Image(systemName: game.type.imageName)
+            Image(systemName: gameType.imageName)
                 .font(.system(size: 40))
                 .foregroundColor(.blue)
                 .frame(width: 80, height: 80)
                 .background(Color.blue.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 15))
             
-            Text(game.type.name)
+            Text(gameType.name)
                 .font(.headline)
                 .foregroundColor(.primary)
             
-            Text(game.type.description)
+            Text(gameType.description)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)

@@ -66,11 +66,6 @@ final class ReactionGameViewModel: ObservableObject {
                 startTime = Date()
             }
         }
-        
-//        achievementManager.updateAchievement(
-//            for: .reaction,
-//            action: .gamePlayed
-//        )
     }
     
     func stopGame() {
@@ -91,11 +86,6 @@ final class ReactionGameViewModel: ObservableObject {
         
         guard let reactionTime else { return }
         
-//        achievementManager.updateAchievement(
-//            for: .reaction,
-//            action: .newRecord(reactionTime)
-//        )
-        
         if bestTime == nil || reactionTime < bestTime! {
             bestTime = reactionTime
         }
@@ -104,10 +94,13 @@ final class ReactionGameViewModel: ObservableObject {
         
         if !AppState.shared.showOnboarding {
             Task {
-                try? await GameService.shared.sendAttempt(
+                let achievements = try? await GameService.shared.sendAttempt(
                     reactionTime,
                     gameType: .reaction
                 )
+                if let achievements {
+                    achievementManager.processNewAchievements(achievements)
+                }
             }
         }
         

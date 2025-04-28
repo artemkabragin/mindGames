@@ -2,7 +2,7 @@ import SwiftUI
 
 enum MainScreenDestination: Hashable {
     case person
-    case game(Game)
+    case game(GameType)
 }
 
 struct RootView: View {
@@ -33,8 +33,8 @@ struct RootView: View {
         case .person:
             UserProfileView()
             
-        case .game(let game):
-            switch game.type {
+        case .game(let gameType):
+            switch gameType {
             case .cardFlip:
                 CardFlipGameView(onboardingViewModel: OnboardingViewModel())
             case .reaction:
