@@ -9,10 +9,6 @@ struct ShimmerConfiguration {
     
     static let `default` = ShimmerConfiguration(
         gradient: Gradient(stops: [
-//            .init(color: .white, location: 0),
-//            .init(color: .black, location: 0.5),
-//            .init(color: .white, location: 1)
-//
             .init(color: .black, location: 0),
             .init(color: .white, location: 0.5),
             .init(color: .black, location: 1)
