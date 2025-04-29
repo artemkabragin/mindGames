@@ -1,7 +1,7 @@
 import SwiftUI
 
 private enum Constants {
-    static let navigationTitle = "Mind Games"
+    static let navigationTitle = "Игры разума"
     static let achievementsSectionTitle = "Достижения"
     static let personIconSystemName = "person.circle.fill"
 }

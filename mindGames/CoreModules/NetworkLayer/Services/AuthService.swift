@@ -2,7 +2,8 @@ import SwiftUI
 import KeychainAccess
 
 private enum KeychainKeys {
-    static let authToken = "auth_token"
+    static let accessToken = "access_token"
+    static let refreshToken = "refresh_token"
     static let serviceKey = "com.mindgames.auth"
 }
 
@@ -18,6 +19,7 @@ final class AuthService: ObservableObject {
     
     private let client = HTTPClient.shared
     private let keychain = Keychain(service: KeychainKeys.serviceKey)
+    private var isSendedRefresh: Bool = false
     
     // MARK: - Init
     
@@ -28,15 +30,26 @@ final class AuthService: ObservableObject {
     // MARK: - Public Methods
     
     func isUserLoggedIn() -> Bool {
-        return getAuthToken() != nil
+        return getAccessToken() != nil
     }
     
-    func getAuthToken() -> String? {
-        return keychain[KeychainKeys.authToken]
+    func getAccessToken() -> String? {
+        return keychain[KeychainKeys.accessToken]
     }
     
-    func saveAuthToken(_ token: String) async {
-        keychain[KeychainKeys.authToken] = token
+    func getRefreshToken() -> String? {
+        return keychain[KeychainKeys.refreshToken]
+    }
+    
+    func saveAccessToken(_ token: String) async {
+        keychain[KeychainKeys.accessToken] = token
+        await MainActor.run {
+            isLoggedIn = true
+        }
+    }
+    
+    func saveRefreshToken(_ token: String) async {
+        keychain[KeychainKeys.refreshToken] = token
         await MainActor.run {
             isLoggedIn = true
         }
@@ -44,7 +57,8 @@ final class AuthService: ObservableObject {
     
     func logout() {
         isLoggedIn = false
-        keychain[KeychainKeys.authToken] = nil
+        keychain[KeychainKeys.accessToken] = nil
+        keychain[KeychainKeys.refreshToken] = nil
     }
     
     func register(
@@ -56,8 +70,9 @@ final class AuthService: ObservableObject {
             password: password
         )
         do {
-            let authToken: AuthToken = try await client.sendRequest(requestType: .register(body))
-            await saveAuthToken(authToken.value)
+            let tokenResponse: TokenResponse = try await client.sendRequest(requestType: .register(body))
+            await saveAccessToken(tokenResponse.accessToken)
+            await saveRefreshToken(tokenResponse.refreshToken)
         } catch {
             throw error
         }
@@ -73,10 +88,39 @@ final class AuthService: ObservableObject {
             password: password
         )
         do {
-            let authToken: AuthToken = try await client.sendRequest(requestType: .login(body))
-            await saveAuthToken(authToken.value)
+            let tokenResponse: TokenResponse = try await client.sendRequest(requestType: .login(body))
+            await saveAccessToken(tokenResponse.accessToken)
+            await saveRefreshToken(tokenResponse.refreshToken)
         } catch {
             throw error
+        }
+    }
+    
+    func refreshTokenIfNeeded() async -> Bool {
+        guard !isSendedRefresh else { return false }
+        
+        guard let refresh = getRefreshToken() else {
+            await MainActor.run {
+                logout()
+            }
+            return false
+        }
+        
+        isSendedRefresh = true
+        
+        do {
+            let body = RefreshTokenRequest(refreshToken: refresh)
+            let response: TokenResponse = try await client.sendRequest(requestType: .refresh(body))
+            await saveAccessToken(response.accessToken)
+            await saveRefreshToken(response.refreshToken)
+            isSendedRefresh = false
+            return true
+        } catch {
+            await MainActor.run {
+                logout()
+                isSendedRefresh = false
+            }
+            return false
         }
     }
 }

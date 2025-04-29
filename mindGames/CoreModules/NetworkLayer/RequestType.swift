@@ -3,6 +3,7 @@ import Foundation
 enum RequestType {
     case login(UserCredentials)
     case register(UserRegisterRequest)
+    case refresh(RefreshTokenRequest)
     
     case onboarding(OnboardingRequest)
     case play(GameAttemptRequest)
@@ -16,6 +17,8 @@ enum RequestType {
             URL(string: "http://localhost:8080/auth/login")!
         case .register:
             URL(string: "http://localhost:8080/auth/register")!
+        case .refresh:
+            URL(string: "http://localhost:8080/auth/refresh")!
         case .progress(let request):
             URL(string: "http://localhost:8080/users/progress?type=\(request.type.rawValue)")!
         case .onboarding:
@@ -33,6 +36,8 @@ enum RequestType {
             "POST"
         case .register:
             "POST"
+        case .refresh:
+            "POST"
         case .onboarding:
             "POST"
         case .play:
@@ -48,9 +53,11 @@ enum RequestType {
         switch self {
         case .login(let request):
             request
-        case .play(let request):
-            request
         case .register(let request):
+            request
+        case .refresh(let request):
+            request
+        case .play(let request):
             request
         case .onboarding(let request):
             request
