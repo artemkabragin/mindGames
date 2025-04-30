@@ -13,6 +13,8 @@ final class AuthService: ObservableObject {
     
     static let shared = AuthService()
     
+    // MARK: - Public Properties
+    
     @Published var isLoggedIn: Bool = false
     
     // MARK: - Private Properties
@@ -59,6 +61,8 @@ final class AuthService: ObservableObject {
         isLoggedIn = false
         keychain[KeychainKeys.accessToken] = nil
         keychain[KeychainKeys.refreshToken] = nil
+        AppState.shared.showOnboarding = true
+        AppState.shared.isOnboardingComplete = false
     }
     
     func register(
@@ -70,9 +74,8 @@ final class AuthService: ObservableObject {
             password: password
         )
         do {
-            let tokenResponse: TokenResponse = try await client.sendRequest(requestType: .register(body))
-            await saveAccessToken(tokenResponse.accessToken)
-            await saveRefreshToken(tokenResponse.refreshToken)
+            let authResponse: AuthResponse = try await client.sendRequest(requestType: .register(body))
+            await proccessAuthResponse(authResponse)
         } catch {
             throw error
         }
@@ -88,9 +91,8 @@ final class AuthService: ObservableObject {
             password: password
         )
         do {
-            let tokenResponse: TokenResponse = try await client.sendRequest(requestType: .login(body))
-            await saveAccessToken(tokenResponse.accessToken)
-            await saveRefreshToken(tokenResponse.refreshToken)
+            let authResponse: AuthResponse = try await client.sendRequest(requestType: .login(body))
+            await proccessAuthResponse(authResponse)
         } catch {
             throw error
         }
@@ -110,9 +112,8 @@ final class AuthService: ObservableObject {
         
         do {
             let body = RefreshTokenRequest(refreshToken: refresh)
-            let response: TokenResponse = try await client.sendRequest(requestType: .refresh(body))
-            await saveAccessToken(response.accessToken)
-            await saveRefreshToken(response.refreshToken)
+            let authResponse: AuthResponse = try await client.sendRequest(requestType: .refresh(body))
+            await proccessAuthResponse(authResponse)
             isSendedRefresh = false
             return true
         } catch {
@@ -121,6 +122,24 @@ final class AuthService: ObservableObject {
                 isSendedRefresh = false
             }
             return false
+        }
+    }
+    
+    // MARK: - Private Methods
+    
+    private func proccessAuthResponse(_ authResponse: AuthResponse) async {
+        let tokenResponse = authResponse.token
+        
+        await saveAccessToken(tokenResponse.accessToken)
+        await saveRefreshToken(tokenResponse.refreshToken)
+        
+        let isOnboardingComplete = authResponse.user.isOnboardingComplete
+        let userName = authResponse.user.username
+        
+        await MainActor.run {
+            AppState.shared.userName = userName
+            AppState.shared.isOnboardingComplete = isOnboardingComplete
+            AppState.shared.showOnboarding = !isOnboardingComplete
         }
     }
 }

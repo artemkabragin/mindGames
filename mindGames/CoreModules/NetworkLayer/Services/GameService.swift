@@ -32,15 +32,15 @@ final class GameService {
     func sendOnboardingAttempts(
         _ attempts: [Double],
         gameType: GameType
-    ) async throws -> Double {
+    ) async throws -> OnboardingResponse {
         let body = OnboardingRequest(
             gameType: gameType,
             attempts: attempts
         )
         do {
-            let initialAverage: Double = try await client.sendRequest(requestType: .onboarding(body))
-            print(initialAverage)
-            return initialAverage
+            let response: OnboardingResponse = try await client.sendRequest(requestType: .onboarding(body))
+            print(response.average)
+            return response
         } catch {
             throw error
         }

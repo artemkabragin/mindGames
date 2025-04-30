@@ -32,6 +32,8 @@ final class ColorMatchGameViewModel: ObservableObject {
             }
         }
     }
+    @Published var isShowOnboardingCompleted = false
+    var onboardingAverage: Double = 0
     private var roundCount: Int = 0
     var attempts: [Double] = []
     
@@ -139,10 +141,18 @@ private extension ColorMatchGameViewModel {
     }
     
     func sendOnboardingResult() async {
-        let result = try? await GameService.shared.sendOnboardingAttempts(
+        guard let result = try? await GameService.shared.sendOnboardingAttempts(
             attempts,
             gameType: .colorMatch
-        )
-        print("Onboarding result in \(GameType.colorMatch) - \(result ?? 0)")
+        ) else {
+            isShowOnboardingCompleted = false
+            return
+        }
+        
+        onboardingAverage = result.average
+        
+        await MainActor.run {
+            isShowOnboardingCompleted = true
+        }
     }
 }

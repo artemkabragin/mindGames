@@ -23,13 +23,13 @@ final class ReactionGameViewModel: ObservableObject {
             }
         }
     }
-    @Published var onboardingResult: Double = 0
+    @Published var isShowOnboardingCompleted = false
+    var onboardingAverage: Double = 0
     
     // MARK: - Private Properties
     
     private let achievementManager: AchievementManager = .shared
     private var roundCount: Int = 0
-    private let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
     private let onboardingRoundCount: Int?
     private var attempts: [Double] = []
     
@@ -110,10 +110,18 @@ final class ReactionGameViewModel: ObservableObject {
     }
     
     func sendOnboardingResult() async {
-        let result = try? await GameService.shared.sendOnboardingAttempts(
+        guard let result = try? await GameService.shared.sendOnboardingAttempts(
             attempts,
             gameType: .reaction
-        )
-        print("Onboarding result in \(GameType.reaction) - \(result ?? 0)")
+        ) else {
+            isShowOnboardingCompleted = false
+            return
+        }
+        
+        onboardingAverage = result.average
+        
+        await MainActor.run {
+            isShowOnboardingCompleted = true
+        }
     }
 }

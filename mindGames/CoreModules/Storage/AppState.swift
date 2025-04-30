@@ -8,6 +8,8 @@ final class AppState: ObservableObject {
     
     // MARK: - Public Properties
     
+    @AppStorage(StorageKeys.userName.rawValue) var userName: String = ""
+    @AppStorage(StorageKeys.isOnboardingComplete.rawValue) var isOnboardingComplete: Bool = false
     @AppStorage(StorageKeys.showOnboarding.rawValue) var showOnboarding: Bool = true
     
     @AppStorage(StorageKeys.hasSeenCardFlipTutorial.rawValue) var hasSeenCardFlipTutorial: Bool = false
@@ -17,7 +19,8 @@ final class AppState: ObservableObject {
     // MARK: - Init
     
     private init() {
-//        showOnboarding = true
+        showOnboarding = !isOnboardingComplete
+//        showOnboarding = false
 //        hasSeenCardFlipTutorial = false
 //        hasSeenReactionTutorial = false
 //        hasSeenColorMatchTutorial = false

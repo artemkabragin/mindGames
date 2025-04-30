@@ -36,6 +36,9 @@ final class CardFlipGameViewModel: ObservableObject {
         }
     }
     
+    @Published var isShowOnboardingCompleted = false
+    var onboardingAverage: Double = 0
+    
     let onboardingRoundCount: Int?
     
     // MARK: - Private Properties
@@ -176,10 +179,18 @@ private extension CardFlipGameViewModel {
     }
     
     func sendOnboardingResult() async {
-        let result = try? await GameService.shared.sendOnboardingAttempts(
+        guard let result = try? await GameService.shared.sendOnboardingAttempts(
             attempts,
             gameType: .cardFlip
-        )
-        print("Onboarding result in \(GameType.cardFlip) - \(result ?? 0)")
+        ) else {
+            isShowOnboardingCompleted = false
+            return
+        }
+        
+        onboardingAverage = result.average
+        
+        await MainActor.run {
+            isShowOnboardingCompleted = true
+        }
     }
 }

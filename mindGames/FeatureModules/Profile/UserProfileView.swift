@@ -10,7 +10,7 @@ struct UserProfileView: View {
     var body: some View {
         VStack {
 //            photoView
-//            userNameView
+            userNameView
             attentionProgressView
             reactionProgressView
             logoutButton
@@ -46,7 +46,7 @@ private extension UserProfileView {
 
 private extension UserProfileView {
     var userNameView: some View {
-        Text("Имя пользователя")
+        Text(AppState.shared.userName)
             .font(.title2)
             .padding(.bottom, 20)
     }

@@ -4,7 +4,6 @@ struct ColorMatchGameView: View {
     
     @StateObject private var viewModel = ColorMatchGameViewModel()
     @ObservedObject var onboardingViewModel: OnboardingViewModel
-    let onboardingGameResultCalculator = OnboardingGameResultCalculator.shared
     
     var body: some View {
         ZStack {
@@ -22,16 +21,13 @@ struct ColorMatchGameView: View {
         }
         .alert(
             "Тестирование завершено",
-            isPresented: $viewModel.isOnboardingRoundsCompleted
+            isPresented: $viewModel.isShowOnboardingCompleted
         ) {
             Button("Далее") {
                 onboardingViewModel.navigationPath.append(OnboardingDestination.finish)
             }
         } message: {
-            let result = onboardingGameResultCalculator.calculateResult(
-                gameType: .colorMatch,
-                attempts: viewModel.attempts
-            )
+            let result = viewModel.onboardingAverage
             Text("Ваш средний результат - \(Int(result)).")
         }
         .alert(

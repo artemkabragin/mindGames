@@ -1,4 +1,7 @@
 enum StorageKeys: String {
+    case userName
+    case isOnboardingComplete
+    
     case showOnboarding
     
     case hasSeenCardFlipTutorial
