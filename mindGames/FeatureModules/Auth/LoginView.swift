@@ -1,5 +1,11 @@
 import SwiftUI
 
+private enum Constants {
+    static let loginTextFieldTitle = "Логин"
+    static let passwordTextFieldTitle = "Пароль"
+    static let loginButtonTitle = "Войти"
+}
+
 struct LoginView: View {
     
     @State private var username: String = ""
@@ -11,25 +17,20 @@ struct LoginView: View {
     
     var body: some View {
         ZStack {
-            Color.blue.opacity(0.7).ignoresSafeArea(.all)
+            Color.blue.opacity(0.2).ignoresSafeArea(.all)
             
             VStack {
-                TextField("Username", text: $username)
+                TextField(Constants.loginTextFieldTitle, text: $username)
+                    .padding(.horizontal)
+                    .textFieldStyle(.roundedBorder)
+                    
+                SecureField(Constants.passwordTextFieldTitle, text: $password)
                     .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .textFieldStyle(.roundedBorder)
                 
-                SecureField("Password", text: $password)
-                    .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                loginButton
                 
-                Button("Login") {
-                    Task {
-                        await login()
-                    }
-                }
-                .padding()
-                
-                if let errorMessage = errorMessage {
+                if let errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
                 }
@@ -54,6 +55,31 @@ struct LoginView: View {
                 errorMessage = "\(errorResponse.reason)"
             }
         }
+    }
+}
+
+// MARK: - Login button
+
+private extension LoginView {
+    var loginButton: some View {
+        Button(action: {
+            Task {
+                await login()
+            }
+        }) {
+            HStack {
+                Spacer()
+                Text(Constants.loginButtonTitle)
+                    .foregroundColor(.white)
+                    .fontWeight(.semibold)
+                Spacer()
+            }
+            .padding()
+            .background(Color.blue)
+            .cornerRadius(12)
+            .padding(.horizontal)
+        }
+        .padding(.bottom, 20)
     }
 }
 
