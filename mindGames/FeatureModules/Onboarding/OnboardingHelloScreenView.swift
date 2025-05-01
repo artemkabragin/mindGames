@@ -1,6 +1,7 @@
 import SwiftUI
 
 private enum Constants {
+    static let title = "Игры разума"
     static let nextButtonText: String = "Начать"
     static let onboardingDescription: String = """
             Доброго времени суток!
@@ -25,7 +26,7 @@ struct OnboardingHelloScreenView: View {
                 nextButton
             }
             .padding()
-            .navigationTitle("Mind Games")
+            .navigationTitle(Constants.title)
             .navigationDestination(for: OnboardingDestination.self) { screen in
                 viewModel.destination(for: screen)
             }

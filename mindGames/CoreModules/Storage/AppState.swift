@@ -20,6 +20,9 @@ final class AppState: ObservableObject {
     
     private init() {
         showOnboarding = !isOnboardingComplete
+        hasSeenCardFlipTutorial = !showOnboarding
+        hasSeenReactionTutorial = !showOnboarding
+        hasSeenColorMatchTutorial = !showOnboarding
 //        showOnboarding = false
 //        hasSeenCardFlipTutorial = false
 //        hasSeenReactionTutorial = false

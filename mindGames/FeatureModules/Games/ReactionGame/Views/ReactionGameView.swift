@@ -38,10 +38,6 @@ struct ReactionGameView: View {
 private extension ReactionGameView {
     var gameView: some View {
         VStack {
-            Text("Лучшее время: \(viewModel.bestTime?.formatted() ?? "N/A")")
-                .font(.title2)
-                .padding()
-            
             Spacer()
             
             Circle()
